@@ -1,4 +1,4 @@
-package ar_tubo.services;
+package com.ar_tubo.app.services;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import ar_tubo.classes.User;
+import com.ar_tubo.app.classes.User;
 
 /**
  * Service class that handles all database operations related to users

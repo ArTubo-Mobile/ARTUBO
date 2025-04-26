@@ -1,4 +1,4 @@
-package ar_tubo.classes;
+package com.ar_tubo.app.classes;
 
 public class User {
     String username;

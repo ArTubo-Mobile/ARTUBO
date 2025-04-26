@@ -1,4 +1,4 @@
-package ar_tubo;
+package com.ar_tubo.app;
 
 
 
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.tensorflow.lite.examples.classification.R;
+import com.ar_tubo.app.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

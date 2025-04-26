@@ -1,4 +1,4 @@
-package ar_tubo;
+package com.ar_tubo.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,16 +9,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import org.tensorflow.lite.examples.classification.R;
 
-import ar_tubo.services.UserDataService;
-import ar_tubo.Login;
-import ar_tubo.Utils;
+import com.ar_tubo.app.classes.User;
+import com.ar_tubo.app.services.UserDataService;
+
 
 public class AccountCreation extends AppCompatActivity {
     private UserDataService userDataService;
@@ -164,16 +170,16 @@ public class AccountCreation extends AppCompatActivity {
     // Better name for the method that saves user profile data
     private void createUserProfile(String userId, String username, String email, String arduinoId) {
         // Create user profile with the newly generated user ID
-        UserAdminClass newUser = new UserAdminClass(userId, userId, username, email, arduinoId);
+        User newUser = new User(userId, username, email, arduinoId);
 
-        userDataService.saveUserProfile(newUser, new UserDataService.DatabaseCallback() {
+        userDataService.saveUser(newUser, new UserDataService.DatabaseCallback() {
             @Override
             public void onSuccess() {
                 // Reset the form
                 clearForm();
 
                 // Show success message
-                Toast.makeText(CreateAccount.this,
+                Toast.makeText(AccountCreation.this,
                         "Successfully created an account!\nWelcome to AR-Tubo",
                         Toast.LENGTH_LONG).show();
 
@@ -192,28 +198,26 @@ public class AccountCreation extends AppCompatActivity {
 
     private void handleError(String errorMessage) {
         setFormEnabled(true);
-        progressBar.setVisibility(View.GONE);
         utils.alert_prompt(this, errorMessage);
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
     private void setFormEnabled(boolean enabled) {
-        et_username.setEnabled(enabled);
-        et_email.setEnabled(enabled);
-        et_arduino_id.setEnabled(enabled);
-        et_pass.setEnabled(enabled);
-        et_retry_pass.setEnabled(enabled);
+        username_field.setEnabled(enabled);
+        email_field.setEnabled(enabled);
+        arduino_id_field.setEnabled(enabled);
+        pass1_field.setEnabled(enabled);
+        pass2_field.setEnabled(enabled);
         button_create_account.setEnabled(enabled);
         text_login.setEnabled(enabled);
     }
 
     private void clearForm() {
-        et_username.setText("");
-        et_email.setText("");
-        et_arduino_id.setText("");
-        et_pass.setText("");
-        et_retry_pass.setText("");
-        progressBar.setVisibility(View.GONE);
+        username_field.setText("");
+        email_field.setText("");
+        arduino_id_field.setText("");
+        pass1_field.setText("");
+        pass2_field.setText("");
         setFormEnabled(true);
     }
 }
