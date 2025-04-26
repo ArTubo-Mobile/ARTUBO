@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tfe_color_primary">#ffa800</color>
+    <color name="tfe_color_primary_dark">#ff6f00</color>
+    <color name="tfe_color_accent">#425066</color>
+
+    <color name="tfe_semi_transparent">#66000000</color>
+
+    <color name="black">#FF000000</color>
+    <color name="black_for_transparent">#181219</color>
+    <color name="black_for_transparent_secondary">#2F2930</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="selected_bottm_nav">#D0EE3B</color>
+    <color name="button_bg">#F3F7F4</color>
+    <color name="text_secondary">#686E68</color>
+    <color name="text_tertiary">#495642</color>
+    <color name="splash_screen_primary">#FDF0DA</color>
+    <color name="splash_screen_secondary">#A0BB91</color>
+    <color name="plant_image_detected_bg">#EDECE5</color>
+    <color name="progress_tint_normal">#C0E239</color>
+    <color name="progress_tint_critical">#FF2951</color>
+    <color name="nav_color_white">#F2F2ED</color>
+    <color name="base_color">#055F03</color>
+    <color name="base_light_color">#DCE8DC</color>
+    <color name="primary_color">#014E0B</color>
+    <color name="secondary_color">#1C5316</color>
+    <color name="tertiary_color">#CCDDCC</color>
+    <color name="base_color_four">#055F03</color>
+</resources>

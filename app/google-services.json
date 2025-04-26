@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "6701720973",
+    "firebase_url": "https://ar-tubo-default-rtdb.firebaseio.com",
+    "project_id": "ar-tubo",
+    "storage_bucket": "ar-tubo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6701720973:android:7e7832d74cefd1900e49c4",
+        "android_client_info": {
+          "package_name": "com.example.artubo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBONbVm-mMvW2rBG8IoDDmJofDxnMaPnmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6701720973:android:bba4441e0e1dbfa90e49c4",
+        "android_client_info": {
+          "package_name": "com.google.mediapipe.examples.objectdetection"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBONbVm-mMvW2rBG8IoDDmJofDxnMaPnmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6701720973:android:520407588bab79e30e49c4",
+        "android_client_info": {
+          "package_name": "org.tensorflow.lite.examples.classification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBONbVm-mMvW2rBG8IoDDmJofDxnMaPnmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

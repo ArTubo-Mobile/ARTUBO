@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:orientation="vertical">
+
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            tools:context="org.tensorflow.lite.examples.classification.CameraActivity" >
+
+        </FrameLayout>
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:visibility="gone"
+            android:background="@color/tfe_semi_transparent"/>
+
+        <RelativeLayout
+            android:id="@+id/linearlayout_scanning_ui"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <!-- Top overlay -->
+            <View
+                android:id="@+id/overlay_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="#80000000" /> <!-- 50% transparent black -->
+
+            <!-- Bottom overlay -->
+            <View
+                android:id="@+id/overlay_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/center_square"
+                android:background="#80000000" />
+
+            <!-- Left overlay -->
+            <View
+                android:id="@+id/overlay_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/center_square"
+                android:layout_above="@id/overlay_bottom"
+                android:layout_below="@id/overlay_top"
+                android:background="#80000000" />
+
+            <!-- Right overlay -->
+            <View
+                android:id="@+id/overlay_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/center_square"
+                android:layout_above="@id/overlay_bottom"
+                android:layout_below="@id/overlay_top"
+                android:background="#80000000" />
+
+            <!-- Center square (scanner area) -->
+            <RelativeLayout
+                android:id="@+id/center_square"
+                android:layout_width="200dp"
+                android:layout_height="220dp"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent">
+
+                <!-- Optional: Border for the scanner area -->
+                <View
+                    android:id = "@+id/scanner_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/scanner_border" />
+
+                <TextView
+                    android:id="@+id/textView_scanning_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Focus Camera to the Subject"
+                    android:textAlignment="center"
+                    android:layout_marginTop="190dp"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_bottom_wrapper_nav"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:alpha="0.8"
+            android:background="@color/black_for_transparent"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearlayout_bottom_nav"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"
+                android:alpha="0.8"
+                android:background="@color/black_for_transparent"
+                android:elevation="3dp"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_home_bottom_nav"
+                    android:layout_width="86dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView_home_bottom_nav"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:padding="14dp"
+                        android:src="@drawable/homebottomnavdark1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_scan_bottom_nav"
+                    android:layout_width="87dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView_scan_bottom_nav"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:padding="14dp"
+                        android:src="@drawable/scanhomenavselected1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_logout_bottom_nav"
+                    android:layout_width="87dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView_logout_bottom_nav"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:padding="14dp"
+                        android:src="@drawable/bellhomenavdarklogout1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="675dp"
+                android:text="Focus the camera to the Object"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/bottom_sheet_layout"
+        android:visibility="gone"
+        layout="@layout/tfe_ic_layout_bottom_sheet" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
