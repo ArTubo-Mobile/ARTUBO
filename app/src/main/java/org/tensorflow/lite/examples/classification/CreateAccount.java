@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import org.tensorflow.lite.examples.classification.data_class.UserAdminClass;
-import ar_tubo.Utils;
+import com.ar_tubo.app.Utils;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

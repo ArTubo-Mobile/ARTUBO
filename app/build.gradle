@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace 'org.tensorflow.lite.examples.classification'
+    namespace 'com.ar_tubo.app'
     compileSdkVersion 34
     defaultConfig {
-        applicationId "org.tensorflow.lite.examples.classification"
+        applicationId "com.ar_tubo.app"
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 1
