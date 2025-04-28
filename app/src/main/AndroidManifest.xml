@@ -10,6 +10,7 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -68,5 +69,7 @@
             android:name=".Dashboard"
             android:exported="false">
         </activity>
+        <activity android:name=".ScannerActivity" android:exported="false" />
+
     </application>
 </manifest>

@@ -28,6 +28,14 @@ import org.tensorflow.lite.examples.classification.ClassifierActivity;
 import org.tensorflow.lite.examples.classification.Login;
 import org.tensorflow.lite.examples.classification.data_class.UserAdminClass;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+
+import android.widget.Toast;
+import androidx.core.app.ActivityCompat;
+
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,8 +96,16 @@ public class Dashboard extends AppCompatActivity {
         button_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ii = new Intent(getApplicationContext(), ClassifierActivity.class);
-                startActivity(ii);
+                // Check for camera permission before opening camera screen
+                if (ContextCompat.checkSelfPermission(Dashboard.this,
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    // Request camera permission
+                    ActivityCompat.requestPermissions(Dashboard.this,
+                            new String[]{Manifest.permission.CAMERA}, 100);
+                } else {
+                    // Permission already granted, start scanner activity
+                    openScannerActivity();
+                }
             }
         });
 
@@ -109,6 +125,26 @@ public class Dashboard extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, start scanner activity
+            openScannerActivity();
+        } else {
+            // Permission denied
+            Toast.makeText(this, "Camera permission required for scanning",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openScannerActivity() {
+        Intent intent = new Intent(Dashboard.this, ScannerActivity.class);
+        startActivity(intent);
     }
 
 

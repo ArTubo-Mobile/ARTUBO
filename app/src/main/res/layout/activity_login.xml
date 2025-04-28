@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Welcome to AR-Tubo!"
+                android:text="Welcome to CaneSense!"
                 android:textAlignment="center"
                 android:textSize="30dp"
                 android:textStyle="bold" />
