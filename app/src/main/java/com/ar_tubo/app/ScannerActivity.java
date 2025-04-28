@@ -1,16 +1,18 @@
 package com.ar_tubo.app;
 
-import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
@@ -21,29 +23,49 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
-import com.google.common.util.concurrent.ListenableFuture;
 
-import org.tensorflow.lite.DataType;
+import com.ar_tubo.app.classes.ScanResult;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.support.image.TensorImage;
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.concurrent.ExecutionException;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import android.content.res.AssetFileDescriptor;
+
 public class ScannerActivity extends AppCompatActivity {
 
     private PreviewView previewView;
     private ImageCapture imageCapture;
     private Button captureButton;
     private TextView resultTextView;
+    private ImageView capturedImageView;
+    private ProgressBar analysisProgressBar;
     private Interpreter tfliteInterpreter;
+
+    // Firebase references
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private DatabaseReference scanResultsRef;
+
+    // Thread pool for background tasks
+    private ExecutorService executor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +76,20 @@ public class ScannerActivity extends AppCompatActivity {
         previewView = findViewById(R.id.preview_view);
         captureButton = findViewById(R.id.capture_button);
         resultTextView = findViewById(R.id.result_text);
+        capturedImageView = findViewById(R.id.captured_image_view); // Add this to your layout
+        analysisProgressBar = findViewById(R.id.analysis_progress_bar); // Add this to your layout
+
+        // Hide progress bar and image view initially
+        analysisProgressBar.setVisibility(View.GONE);
+        capturedImageView.setVisibility(View.GONE);
+
+        // Initialize Firebase
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        scanResultsRef = FirebaseDatabase.getInstance().getReference("/scan_results");
+
+        // Initialize executor
+        executor = Executors.newSingleThreadExecutor();
 
         // Initialize TensorFlow Lite model
         initTensorFlowModel();
@@ -68,6 +104,13 @@ public class ScannerActivity extends AppCompatActivity {
                 captureImage();
             }
         });
+
+        // Check if user is logged in
+        if (currentUser == null) {
+            Toast.makeText(this, "Please log in to use this feature", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
     }
 
     private void initTensorFlowModel() {
@@ -85,13 +128,15 @@ public class ScannerActivity extends AppCompatActivity {
             Interpreter.Options options = new Interpreter.Options();
             tfliteInterpreter = new Interpreter(tfliteModel, options);
 
-            resultTextView.setText("Model loaded successfully");
+            fileDescriptor.close();
+            inputStream.close();
+
+            resultTextView.setText("Ready to scan");
         } catch (IOException e) {
             resultTextView.setText("Error loading model: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     private void setupCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
@@ -129,13 +174,19 @@ public class ScannerActivity extends AppCompatActivity {
     }
 
     private void captureImage() {
-        if (imageCapture == null) {
+        if (imageCapture == null || currentUser == null) {
             return;
         }
 
-        // Create output file for the captured image
-        File photoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "CaneSense_" + System.currentTimeMillis() + ".jpg");
+        // Disable the capture button during processing
+        captureButton.setEnabled(false);
+
+        // Create timestamp for unique filename
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String filename = "CaneSense_" + timestamp + ".jpg";
+
+        // Create output file for the captured image (temporary storage)
+        File photoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
 
         // Create output options object
         ImageCapture.OutputFileOptions outputOptions =
@@ -146,8 +197,19 @@ public class ScannerActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        // Process the captured image with TensorFlow Lite
-                        processCapturedImage(photoFile);
+                        // Show the captured image
+                        Bitmap capturedBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                        capturedImageView.setImageBitmap(capturedBitmap);
+                        capturedImageView.setVisibility(View.VISIBLE);
+
+                        // Show the progress bar
+                        analysisProgressBar.setVisibility(View.VISIBLE);
+                        resultTextView.setText("Analyzing...");
+
+                        // Process the image in background
+                        executor.execute(() -> {
+                            processCapturedImage(photoFile);
+                        });
                     }
 
                     @Override
@@ -156,6 +218,7 @@ public class ScannerActivity extends AppCompatActivity {
                         Toast.makeText(ScannerActivity.this,
                                 "Error capturing image: " + exception.getMessage(),
                                 Toast.LENGTH_SHORT).show();
+                        captureButton.setEnabled(true);
                         exception.printStackTrace();
                     }
                 });
@@ -167,11 +230,11 @@ public class ScannerActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
 
-            // Create a ByteBuffer for input (matching your original preprocessing)
+            // Create a ByteBuffer for input
             ByteBuffer inputBuffer = ByteBuffer.allocateDirect(1 * 224 * 224 * 3 * 4); // 4 bytes per float
             inputBuffer.order(ByteOrder.nativeOrder());
 
-            // Process input (normalize exactly as in your original code)
+            // Process input (normalize)
             for (int y = 0; y < 224; y++) {
                 for (int x = 0; x < 224; x++) {
                     int pixel = resizedBitmap.getPixel(x, y);
@@ -187,13 +250,13 @@ public class ScannerActivity extends AppCompatActivity {
             inputBuffer.rewind();
 
             // Create output buffer
-            float[][] outputBuffer = new float[1][5]; // Assuming 5 classes
+            float[][] outputBuffer = new float[1][5]; // 5 classes
 
             // Run inference
             tfliteInterpreter.run(inputBuffer, outputBuffer);
 
             // Log raw outputs for debugging
-            StringBuilder valuesStr = new StringBuilder("Output values: ");
+            StringBuilder valuesStr = new StringBuilder();
             for (float val : outputBuffer[0]) {
                 valuesStr.append(val).append(", ");
             }
@@ -213,55 +276,91 @@ public class ScannerActivity extends AppCompatActivity {
             String[] classes = {"Healthy", "Mosaic", "RedRot", "Rust", "Yellow"};
             String className = (maxIndex < classes.length) ? classes[maxIndex] : "Unknown";
 
-            // Display result
-            final String resultText = "Diagnosis: " + className + "\nConfidence: " + (maxProb * 100) + "%";
-            runOnUiThread(() -> {
-                resultTextView.setText(resultText);
-            });
+            final float confidence = maxProb * 100;
+            final String diagnosis = className;
+
+            // Save scan result to Firebase (data only, no image)
+            saveScanResultToFirebase(diagnosis, confidence, outputBuffer[0]);
+
+            // Attempt to delete the temporary file
+            try {
+                imageFile.delete();
+            } catch (Exception e) {
+                Log.e("FILE_DELETE", "Failed to delete temporary image file: " + e.getMessage());
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
             runOnUiThread(() -> {
                 resultTextView.setText("Error: " + e.getMessage());
+                analysisProgressBar.setVisibility(View.GONE);
+                captureButton.setEnabled(true);
             });
         }
     }
 
-    private float[][][][] preprocessImage(Bitmap bitmap) {
-        // Initialize the input array (adjust dimensions based on your model)
-        float[][][][] input = new float[1][224][224][3];
-
-        // Normalize pixel values to [0, 1]
-        for (int x = 0; x < 224; x++) {
-            for (int y = 0; y < 224; y++) {
-                int pixel = bitmap.getPixel(x, y);
-                input[0][y][x][0] = Color.red(pixel) / 255.0f;
-                input[0][y][x][1] = Color.green(pixel) / 255.0f;
-                input[0][y][x][2] = Color.blue(pixel) / 255.0f;
-            }
+    private void saveScanResultToFirebase(String diagnosis, float confidence, float[] rawPredictions) {
+        if (currentUser == null) {
+            runOnUiThread(() -> {
+                Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+                analysisProgressBar.setVisibility(View.GONE);
+                captureButton.setEnabled(true);
+            });
+            return;
         }
 
-        return input;
-    }
+        try {
+            // Create scan result object (no image URL)
+            ScanResult scanResult = new ScanResult(
+                    currentUser.getUid(),
+                    diagnosis,
+                    confidence,
+                    null, // No image URL
+                    System.currentTimeMillis(),
+                    rawPredictions[0], // Healthy
+                    rawPredictions[1], // Mosaic
+                    rawPredictions[2], // RedRot
+                    rawPredictions[3], // Rust
+                    rawPredictions[4]  // Yellow
+            );
 
-    private String postprocessResults(float[][] output) {
-        // Find the class with the highest probability
-        float maxProb = 0;
-        int maxIndex = 0;
+            // Save to Firebase Database
+            String resultId = scanResultsRef.push().getKey();
+            scanResultsRef.child(currentUser.getUid()).child(resultId).setValue(scanResult)
+                    .addOnSuccessListener(aVoid -> {
+                        // Update UI
+                        runOnUiThread(() -> {
+                            // Format confidence to 2 decimal places
+                            String formattedConfidence = String.format(Locale.US, "%.2f%%", confidence);
 
-        for (int i = 0; i < output[0].length; i++) {
-            if (output[0][i] > maxProb) {
-                maxProb = output[0][i];
-                maxIndex = i;
-            }
+                            resultTextView.setText("Diagnosis: " + diagnosis +
+                                    "\nConfidence: " + formattedConfidence);
+                            analysisProgressBar.setVisibility(View.GONE);
+                            captureButton.setEnabled(true);
+
+                            Toast.makeText(ScannerActivity.this,
+                                    "Scan saved to your account",
+                                    Toast.LENGTH_SHORT).show();
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        runOnUiThread(() -> {
+                            resultTextView.setText("Diagnosis: " + diagnosis +
+                                    "\nConfidence: " + confidence + "%" +
+                                    "\nFailed to save to database");
+                            analysisProgressBar.setVisibility(View.GONE);
+                            captureButton.setEnabled(true);
+                        });
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            runOnUiThread(() -> {
+                resultTextView.setText("Error saving result: " + e.getMessage());
+                analysisProgressBar.setVisibility(View.GONE);
+                captureButton.setEnabled(true);
+            });
         }
-
-        // Get class name (replace with your actual class names)
-        String[] classes = {"Healthy", "Diseased", "Pest Infested"};
-        String className = (maxIndex < classes.length) ? classes[maxIndex] : "Unknown";
-
-        // Format the result string
-        return "Diagnosis: " + className + "\nConfidence: " + (maxProb * 100) + "%";
     }
 
     @Override
@@ -270,6 +369,10 @@ public class ScannerActivity extends AppCompatActivity {
         // Close the TensorFlow Lite interpreter
         if (tfliteInterpreter != null) {
             tfliteInterpreter.close();
+        }
+        // Shutdown the executor
+        if (executor != null) {
+            executor.shutdown();
         }
     }
 }
