@@ -163,51 +163,60 @@ public class ScannerActivity extends AppCompatActivity {
 
     private void processCapturedImage(File imageFile) {
         try {
-            // Load and resize the image
+            // Load the image
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
 
-            // Import these at the top of your file:
-            // import org.tensorflow.lite.support.image.TensorImage;
-            // import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
-            // import org.tensorflow.lite.DataType;
+            // Create a ByteBuffer for input (matching your original preprocessing)
+            ByteBuffer inputBuffer = ByteBuffer.allocateDirect(1 * 224 * 224 * 3 * 4); // 4 bytes per float
+            inputBuffer.order(ByteOrder.nativeOrder());
 
-            // Process input image
-            TensorImage tensorImage = new TensorImage(DataType.FLOAT32);
-            tensorImage.load(resizedBitmap);
+            // Process input (normalize exactly as in your original code)
+            for (int y = 0; y < 224; y++) {
+                for (int x = 0; x < 224; x++) {
+                    int pixel = resizedBitmap.getPixel(x, y);
 
-            // Create output buffer based on model's output tensor shape
-            int[] outputShape = tfliteInterpreter.getOutputTensor(0).shape();
-            TensorBuffer outputBuffer = TensorBuffer.createFixedSize(outputShape, DataType.FLOAT32);
+                    // Extract and normalize RGB values (0-255 → 0-1)
+                    inputBuffer.putFloat(Color.red(pixel) / 255.0f);
+                    inputBuffer.putFloat(Color.green(pixel) / 255.0f);
+                    inputBuffer.putFloat(Color.blue(pixel) / 255.0f);
+                }
+            }
+
+            // Reset position to read from the beginning
+            inputBuffer.rewind();
+
+            // Create output buffer
+            float[][] outputBuffer = new float[1][5]; // Assuming 5 classes
 
             // Run inference
-            tfliteInterpreter.run(tensorImage.getBuffer(), outputBuffer.getBuffer());
+            tfliteInterpreter.run(inputBuffer, outputBuffer);
 
-            // Get output as float array
-            float[] outputArray = outputBuffer.getFloatArray();
-
-            // Log all values
+            // Log raw outputs for debugging
             StringBuilder valuesStr = new StringBuilder("Output values: ");
-            for (float val : outputArray) {
+            for (float val : outputBuffer[0]) {
                 valuesStr.append(val).append(", ");
             }
             Log.d("MODEL_OUTPUT", valuesStr.toString());
 
-            // Process results as before
+            // Find the class with highest probability
             float maxProb = 0;
             int maxIndex = 0;
-            for (int i = 0; i < Math.min(3, outputArray.length); i++) {
-                if (outputArray[i] > maxProb) {
-                    maxProb = outputArray[i];
+            for (int i = 0; i < outputBuffer[0].length; i++) {
+                if (outputBuffer[0][i] > maxProb) {
+                    maxProb = outputBuffer[0][i];
                     maxIndex = i;
                 }
             }
 
+            // Get class name
             String[] classes = {"Healthy", "Mosaic", "RedRot", "Rust", "Yellow"};
             String className = (maxIndex < classes.length) ? classes[maxIndex] : "Unknown";
 
+            // Display result
+            final String resultText = "Diagnosis: " + className + "\nConfidence: " + (maxProb * 100) + "%";
             runOnUiThread(() -> {
-                resultTextView.setText("Diagnosis: " + className );
+                resultTextView.setText(resultText);
             });
 
         } catch (Exception e) {

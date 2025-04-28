@@ -31,7 +31,7 @@ import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
-import org.tensorflow.lite.gpu.GpuDelegate;
+//import org.tensorflow.lite.gpu.GpuDelegate;
 import org.tensorflow.lite.nnapi.NnApiDelegate;
 import org.tensorflow.lite.support.common.FileUtil;
 import org.tensorflow.lite.support.common.TensorOperator;
@@ -77,7 +77,7 @@ public abstract class Classifier {
   private final int imageSizeY;
 
   /** Optional GPU delegate for accleration. */
-  private GpuDelegate gpuDelegate = null;
+//  private GpuDelegate gpuDelegate = null;
 
   /** Optional NNAPI delegate for accleration. */
   private NnApiDelegate nnApiDelegate = null;
@@ -203,8 +203,8 @@ public abstract class Classifier {
         tfliteOptions.addDelegate(nnApiDelegate);
         break;
       case GPU:
-        gpuDelegate = new GpuDelegate();
-        tfliteOptions.addDelegate(gpuDelegate);
+//        gpuDelegate = new GpuDelegate();
+//        tfliteOptions.addDelegate(gpuDelegate);
         break;
       case CPU:
         break;
@@ -274,10 +274,10 @@ public abstract class Classifier {
       tflite.close();
       tflite = null;
     }
-    if (gpuDelegate != null) {
-      gpuDelegate.close();
-      gpuDelegate = null;
-    }
+//    if (gpuDelegate != null) {
+//      gpuDelegate.close();
+//      gpuDelegate = null;
+//    }
     if (nnApiDelegate != null) {
       nnApiDelegate.close();
       nnApiDelegate = null;
