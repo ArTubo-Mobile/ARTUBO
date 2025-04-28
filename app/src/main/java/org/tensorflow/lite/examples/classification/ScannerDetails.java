@@ -30,11 +30,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.tensorflow.lite.examples.classification.data_class.CurrentPlantData;
-import ar_tubo.Utils;
+import com.ar_tubo.app.Utils;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import com.ar_tubo.app.R;
 
 public class ScannerDetails extends AppCompatActivity {
 

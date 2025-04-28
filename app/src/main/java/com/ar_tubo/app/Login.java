@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.tensorflow.lite.examples.classification.CreateAccount;
 import org.tensorflow.lite.examples.classification.ForgotPassword;
-import org.tensorflow.lite.examples.classification.InitialSplashScreen;
 
 import com.ar_tubo.app.classes.User;
 import com.ar_tubo.app.services.UserDataService;
@@ -122,7 +121,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onUserLoaded(User user) {
                 // User data loaded successfully, navigate to main screen
-                navigateToSplashScreen();
+                navigateToDashboard();
             }
 
             @Override
@@ -224,8 +223,8 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void navigateToSplashScreen() {
-        Intent intent = new Intent(getApplicationContext(), InitialSplashScreen.class);
+    private void navigateToDashboard() {
+        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
         startActivity(intent);
         finish();
     }

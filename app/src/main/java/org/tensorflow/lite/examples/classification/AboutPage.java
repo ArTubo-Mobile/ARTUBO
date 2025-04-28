@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.ar_tubo.app.R;
 
 public class AboutPage extends AppCompatActivity {
 

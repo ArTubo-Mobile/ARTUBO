@@ -1,5 +1,4 @@
-package org.tensorflow.lite.examples.classification;
-
+package com.ar_tubo.app;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,13 +23,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.tensorflow.lite.examples.classification.AboutPage;
+import org.tensorflow.lite.examples.classification.ClassifierActivity;
+import org.tensorflow.lite.examples.classification.Login;
 import org.tensorflow.lite.examples.classification.data_class.UserAdminClass;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.ar_tubo.app.R;
 
-public class InitialSplashScreen extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity {
 
     Button button_start, button_about, button_exit;
 
@@ -93,7 +94,7 @@ public class InitialSplashScreen extends AppCompatActivity {
         button_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ii = new Intent(getApplicationContext(),ClassifierActivity.class);
+                Intent ii = new Intent(getApplicationContext(), ClassifierActivity.class);
                 startActivity(ii);
             }
         });
@@ -110,7 +111,7 @@ public class InitialSplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                logout_prompt(InitialSplashScreen.this);
+                logout_prompt(Dashboard.this);
 
             }
         });
@@ -195,7 +196,7 @@ public class InitialSplashScreen extends AppCompatActivity {
             public void onClick(View view) {
 
                 mAuth.signOut();
-                Intent ii = new Intent(getApplicationContext(),Login.class);
+                Intent ii = new Intent(getApplicationContext(), Login.class);
                 startActivity(ii);
 
 

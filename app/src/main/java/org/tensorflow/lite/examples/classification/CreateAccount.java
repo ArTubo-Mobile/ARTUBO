@@ -30,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.ar_tubo.app.R;
 public class CreateAccount extends AppCompatActivity {
 
     FirebaseDatabase db;
@@ -161,8 +161,8 @@ public class CreateAccount extends AppCompatActivity {
     private void insert_account_details_to_firebase_db(String email, String firebase_uid, String username){
         dbref = FirebaseDatabase.getInstance().getReference("/user_admin");
         //String unique_user_id = dbref.push().getKey();
-        UserAdminClass uac = new UserAdminClass(firebase_uid,firebase_uid,username,email);
-        dbref.child(firebase_uid).setValue(uac);
+//        UserAdminClass uac = new UserAdminClass(firebase_uid,firebase_uid,username,email);
+//        dbref.child(firebase_uid).setValue(uac);
     }
 
 
@@ -177,7 +177,7 @@ public class CreateAccount extends AppCompatActivity {
                                 if (task.isSuccessful()) {
 
                                     String firebaseUID = mAuth.getUid();
-                                    insert_account_details_to_firebase_db(email_address, firebaseUID, username_string, arduino_id);
+//                                    insert_account_details_to_firebase_db(email_address, firebaseUID, username_string, arduino_id);
                                     Toast.makeText(getApplicationContext(),"Successfully created an account!\nWelcome to AR-Tubo", Toast.LENGTH_LONG).show();
                                     Intent ii = new Intent(getApplicationContext(), Login.class);
                                     startActivity(ii);

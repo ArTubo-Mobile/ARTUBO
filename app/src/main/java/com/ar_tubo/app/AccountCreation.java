@@ -49,6 +49,9 @@ public class AccountCreation extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userDataService = new UserDataService();
         utils = new Utils();
+
+        initViews();
+        setupClickListeners();
     }
 
     private void initViews() {
@@ -126,7 +129,7 @@ public class AccountCreation extends AppCompatActivity {
     }
 
     private void checkUsernameAvailability(String username, String email, String arduinoId, String password) {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/user_admin");
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("/user");
         dbRef.orderByChild("username").equalTo(username)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

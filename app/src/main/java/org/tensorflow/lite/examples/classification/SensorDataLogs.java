@@ -3,6 +3,7 @@ package org.tensorflow.lite.examples.classification;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.ar_tubo.app.R;
 
 public class SensorDataLogs extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package org.tensorflow.lite.examples.classification;
+package com.ar_tubo.app;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ar_tubo.app.R;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -42,7 +41,7 @@ public class SplashScreen extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
 
         if(mUser!=null){
-            Intent ii = new Intent(getApplicationContext(), InitialSplashScreen.class);
+            Intent ii = new Intent(getApplicationContext(), Dashboard.class);
             startActivity(ii);
         }
 
@@ -60,7 +59,7 @@ public class SplashScreen extends AppCompatActivity {
         button_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ii = new Intent(getApplicationContext(), CreateAccount.class);
+                Intent ii = new Intent(getApplicationContext(), AccountCreation.class);
                 startActivity(ii);
             }
         });

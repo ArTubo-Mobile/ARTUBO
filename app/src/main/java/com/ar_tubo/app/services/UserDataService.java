@@ -19,7 +19,7 @@ public class UserDataService {
     private final DatabaseReference userReference;
 
     public UserDataService() {
-        userReference = FirebaseDatabase.getInstance().getReference("/user_admin");
+        userReference = FirebaseDatabase.getInstance().getReference("/user");
     }
 
     /**

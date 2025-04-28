@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.ar_tubo.app.R;
 
 public class Login extends AppCompatActivity {
 
@@ -206,12 +207,11 @@ public class Login extends AppCompatActivity {
                     String firebase_uid = uac.getFirebase_uid();
 
                     String username = uac.getUsername();
-                    String phone = uac.getPhone();
                     String email = uac.getEmail();
 
 
 
-                    user_admin_list.add(new UserAdminClass(""+firebase_uid+"",""+firebase_uid+"",""+username+"",""+email+""));
+                    //user_admin_list.add(new UserAdminClass(""+firebase_uid+"",""+firebase_uid+"",""+username+"",""+email+""));
 
                 }
 
