@@ -77,18 +77,12 @@ public class Dashboard extends AppCompatActivity {
         button_start = (Button) findViewById(R.id.buttonStart);
         button_about = (Button) findViewById(R.id.buttonAbout);
         button_exit = (Button) findViewById(R.id.buttonExit);
-        text_welcome_note = (TextView) findViewById(R.id.textView_welcome_note);
 
         if(mUser!=null){
             //Intent ii = new Intent(getApplicationContext(), Scanner.class);
             //startActivity(ii);
             firebase_uid = mUser.getUid();
-            populate_user_admin_list();
-
         }
-
-
-
 
 
         button_start.setOnClickListener(new View.OnClickListener() {
@@ -117,68 +111,47 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    private void welcomeNote(){
 
-        if(firebase_uid.equals("")){
-
-        }else{
-
-            for(UserAdminClass uac: user_admin_list){
-
-                if(firebase_uid.equals(uac.getFirebase_uid())){
-                    text_welcome_note.setText("Welcome "+uac.getUsername()+"!");
-                }
-
-            }
-
-        }
-
-
-
-    } // welcomeNote
-
-
-    private void populate_user_admin_list(){
-
-        user_admin_list = new ArrayList<>();
-
-        dbref_admin = FirebaseDatabase.getInstance().getReference("/user_admin");
-
-        dbref_admin.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for(DataSnapshot ds: snapshot.getChildren()){
-
-                    UserAdminClass uac = ds.getValue(UserAdminClass.class);
-
-                    String user_admin_id = uac.getUser_admin_id();
-                    String firebase_uid = uac.getFirebase_uid();
-
-                    String username = uac.getUsername();
-//                    String phone = uac.getPhone();
-                    String email = uac.getEmail();
-
-
-//                    user_admin_list.add(new UserAdminClass(""+firebase_uid+"",""+firebase_uid+"",""+username+"",""+email+""));
-
-                }
-
-                welcomeNote();
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-
-
-        });
-
-
-    } // populate_user_admin_list()
+//    private void populate_user_admin_list(){
+//
+//        user_admin_list = new ArrayList<>();
+//
+//        dbref_admin = FirebaseDatabase.getInstance().getReference("/user_admin");
+//
+//        dbref_admin.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                for(DataSnapshot ds: snapshot.getChildren()){
+//
+//                    UserAdminClass uac = ds.getValue(UserAdminClass.class);
+//
+//                    String user_admin_id = uac.getUser_admin_id();
+//                    String firebase_uid = uac.getFirebase_uid();
+//
+//                    String username = uac.getUsername();
+////                    String phone = uac.getPhone();
+//                    String email = uac.getEmail();
+//
+//
+////                    user_admin_list.add(new UserAdminClass(""+firebase_uid+"",""+firebase_uid+"",""+username+"",""+email+""));
+//
+//                }
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//
+//
+//        });
+//
+//
+//    } // populate_user_admin_list()
 
     private void logout_prompt(Context context){
 

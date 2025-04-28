@@ -76,13 +76,13 @@ public class InitialSplashScreen extends AppCompatActivity {
         button_start = (Button) findViewById(R.id.buttonStart);
         button_about = (Button) findViewById(R.id.buttonAbout);
         button_exit = (Button) findViewById(R.id.buttonExit);
-        text_welcome_note = (TextView) findViewById(R.id.textView_welcome_note);
+//        text_welcome_note = (TextView) findViewById(R.id.textView_welcome_note);
 
         if(mUser!=null){
             //Intent ii = new Intent(getApplicationContext(), Scanner.class);
             //startActivity(ii);
             firebase_uid = mUser.getUid();
-            populate_user_admin_list();
+//            populate_user_admin_list();
 
         }
 
@@ -116,25 +116,25 @@ public class InitialSplashScreen extends AppCompatActivity {
         });
     }
 
-    private void welcomeNote(){
-
-        if(firebase_uid.equals("")){
-
-        }else{
-
-            for(UserAdminClass uac: user_admin_list){
-
-                if(firebase_uid.equals(uac.getFirebase_uid())){
-                    text_welcome_note.setText("Welcome "+uac.getUsername()+"!");
-                }
-
-            }
-
-        }
-
-
-
-    } // welcomeNote
+//    private void welcomeNote(){
+//
+//        if(firebase_uid.equals("")){
+//
+//        }else{
+//
+//            for(UserAdminClass uac: user_admin_list){
+//
+//                if(firebase_uid.equals(uac.getFirebase_uid())){
+//                    text_welcome_note.setText("Welcome "+uac.getUsername()+"!");
+//                }
+//
+//            }
+//
+//        }
+//
+//
+//
+//    } // welcomeNote
 
 
     private void populate_user_admin_list(){
@@ -163,7 +163,7 @@ public class InitialSplashScreen extends AppCompatActivity {
 
                 }
 
-                welcomeNote();
+//                welcomeNote();
 
 
             }

@@ -9,53 +9,73 @@
     tools:context=".Dashboard">
 
     <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="153dp"
+        android:layout_height="166dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="164dp"
+        android:src="@drawable/artuboicon1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.906" />
+
+    <ImageView
         android:id="@+id/sugar_cane_bg"
-        android:layout_width="411dp"
-        android:layout_height="357dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="28dp"
         android:alpha="0.3"
         android:scaleType="centerCrop"
         android:src="@drawable/sugarcanebackground"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-1dp" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView_app_name"
-        android:layout_width="283dp"
-        android:layout_height="58dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="220dp"
         android:shadowColor="#00BCD4"
         android:text="CaneSense"
         android:textAlignment="center"
         android:textColor="@color/secondary_color"
         android:textSize="48sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="112dp"
-        tools:layout_editor_absoluteY="107dp" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textView_tagline"
-        android:layout_width="307dp"
-        android:layout_height="54dp"
+        android:layout_width="287dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="64dp"
         android:alpha="0.5"
         android:text="&quot;Grow Smarter, Save Sweeter — Precision Care for Every Cane.&quot;  "
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold|italic"
-        tools:layout_editor_absoluteX="61dp"
-        tools:layout_editor_absoluteY="237dp" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="163dp"
-        android:layout_height="221dp"
-        android:src="@drawable/artuboicon1"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="25dp" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonStart"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonStart"
         android:layout_width="250dp"
         android:layout_height="70dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="81dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/button_round_default"
         android:backgroundTint="@color/white"
         android:padding="5dp"
@@ -64,13 +84,19 @@
         android:textColor="@color/base_color"
         android:textSize="25dp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="80dp"
-        tools:layout_editor_absoluteY="397dp" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonAbout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sugar_cane_bg"
+        app:layout_constraintVertical_bias="0.98" />
 
     <Button
         android:id="@+id/buttonExit"
         android:layout_width="250dp"
         android:layout_height="70dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="81dp"
+        android:layout_marginBottom="68dp"
         android:background="@drawable/button_round_default"
         android:backgroundTint="@color/white"
         android:padding="5dp"
@@ -79,13 +105,17 @@
         android:textColor="@color/base_color"
         android:textSize="25dp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="80dp"
-        tools:layout_editor_absoluteY="593dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonAbout"
         android:layout_width="250dp"
         android:layout_height="70dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="81dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/button_round_default"
         android:backgroundTint="@color/white"
         android:padding="5dp"
@@ -94,7 +124,8 @@
         android:textColor="@color/base_color"
         android:textSize="25dp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="80dp"
-        tools:layout_editor_absoluteY="491dp" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonExit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
