@@ -32,6 +32,7 @@
         android:src="@drawable/sugarcanebackground"
         app:layout_constraintBottom_toTopOf="@+id/buttonStart"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -127,5 +128,39 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonExit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="208dp"
+        android:layout_height="235dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginTop="264dp"
+        android:src="@drawable/bgabstract1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sugar_cane_bg" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="159dp"
+        android:layout_height="173dp"
+        android:src="@drawable/greenabstract1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.936"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sugar_cane_bg"
+        app:layout_constraintVertical_bias="0.142" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="159dp"
+        android:layout_height="173dp"
+        android:src="@drawable/polygonabstract1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.063"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.835" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
