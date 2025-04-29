@@ -87,8 +87,6 @@ public class Dashboard extends AppCompatActivity {
         button_exit = (Button) findViewById(R.id.buttonExit);
 
         if(mUser!=null){
-            //Intent ii = new Intent(getApplicationContext(), Scanner.class);
-            //startActivity(ii);
             firebase_uid = mUser.getUid();
         }
 
@@ -146,48 +144,6 @@ public class Dashboard extends AppCompatActivity {
         Intent intent = new Intent(Dashboard.this, ScannerActivity.class);
         startActivity(intent);
     }
-
-
-//    private void populate_user_admin_list(){
-//
-//        user_admin_list = new ArrayList<>();
-//
-//        dbref_admin = FirebaseDatabase.getInstance().getReference("/user_admin");
-//
-//        dbref_admin.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                for(DataSnapshot ds: snapshot.getChildren()){
-//
-//                    UserAdminClass uac = ds.getValue(UserAdminClass.class);
-//
-//                    String user_admin_id = uac.getUser_admin_id();
-//                    String firebase_uid = uac.getFirebase_uid();
-//
-//                    String username = uac.getUsername();
-////                    String phone = uac.getPhone();
-//                    String email = uac.getEmail();
-//
-//
-////                    user_admin_list.add(new UserAdminClass(""+firebase_uid+"",""+firebase_uid+"",""+username+"",""+email+""));
-//
-//                }
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//
-//
-//        });
-//
-//
-//    } // populate_user_admin_list()
 
     private void logout_prompt(Context context){
 
