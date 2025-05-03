@@ -221,74 +221,89 @@ public class ScannerDetails extends AppCompatActivity {
 
     private void updateEnvironmentData(Plant plantData) {
         // Temperature
-        String tempValue = plantData.getTemperature();
-        String tempStatus = "";
+        if (plantData.getTemperature() != null && !plantData.getTemperature().isEmpty()) {
+            String tempValue = plantData.getTemperature();
+            String tempStatus = "";
 
-        if (Double.parseDouble(tempValue) >= 20 && Double.parseDouble(tempValue) <= 30) {
-            tempStatus = "Normal";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarTemp.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+            if (Double.parseDouble(tempValue) >= 20 && Double.parseDouble(tempValue) <= 30) {
+                tempStatus = "Normal";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarTemp.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+                }
+            } else {
+                tempStatus = "Critical";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarTemp.setProgressTintList(getColorStateList(R.color.progress_tint_critical));
+                }
             }
+
+            int tempProgressValue = Integer.parseInt(String.valueOf(Math.round(Double.parseDouble(tempValue))));
+            updateProgress(tempProgressValue, progressBarTemp);
+            tvTemperature.setText(tempValue + " ℃ - " + tempStatus);
         } else {
-            tempStatus = "Critical";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarTemp.setProgressTintList(getColorStateList(R.color.progress_tint_critical));
-            }
+            tvTemperature.setText("No Data");
+            updateProgress(0, progressBarTemp);
         }
-
-        int tempProgressValue = Integer.parseInt(String.valueOf(Math.round(Double.parseDouble(tempValue))));
-        updateProgress(tempProgressValue, progressBarTemp);
-        tvTemperature.setText(tempValue + " ℃ - " + tempStatus);
 
         // Humidity
-        String humValue = plantData.getHumidity();
-        String humStatus = "";
+        if (plantData.getHumidity() != null && !plantData.getHumidity().isEmpty()) {
+            String humValue = plantData.getHumidity();
+            String humStatus = "";
 
-        if (Double.parseDouble(humValue) >= 60 && Double.parseDouble(humValue) <= 80) {
-            humStatus = "Normal";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarHum.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+            if (Double.parseDouble(humValue) >= 60 && Double.parseDouble(humValue) <= 80) {
+                humStatus = "Normal";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarHum.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+                }
+            } else {
+                humStatus = "Critical";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarHum.setProgressTintList(getColorStateList(R.color.progress_tint_critical));
+                }
             }
+
+            int humProgressValue = Integer.parseInt(String.valueOf(Math.round(Double.parseDouble(humValue))));
+            updateProgress(humProgressValue, progressBarHum);
+            tvHumidity.setText(humValue + " - " + humStatus);
         } else {
-            humStatus = "Critical";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarHum.setProgressTintList(getColorStateList(R.color.progress_tint_critical));
-            }
+            tvHumidity.setText("No Data");
+            updateProgress(0, progressBarHum);
         }
-
-        int humProgressValue = Integer.parseInt(String.valueOf(Math.round(Double.parseDouble(humValue))));
-        updateProgress(humProgressValue, progressBarHum);
-        tvHumidity.setText(humValue + " - " + humStatus);
 
         // Soil Moisture
-        String soilValue = plantData.getSoil_moisture();
-        String soilStatus = "";
+        if (plantData.getSoil_moisture() != null && !plantData.getSoil_moisture().isEmpty()) {
+            String soilValue = plantData.getSoil_moisture();
+            String soilStatus = "";
 
-        if (Double.parseDouble(soilValue) >= 700) {
-            soilStatus = "Dry";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarSoilMoisture.setProgressTintList(getColorStateList(R. color.progress_tint_critical));
+            if (Double.parseDouble(soilValue) >= 700) {
+                soilStatus = "Dry";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_critical));
+                }
+            } else if (Double.parseDouble(soilValue) >= 300 && Double.parseDouble(soilValue) <= 700) {
+                soilStatus = "Moist";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+                }
+            } else if (Double.parseDouble(soilValue) >= 1 && Double.parseDouble(soilValue) <= 100) {
+                soilStatus = "Normal";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+                }
+            } else if (Double.parseDouble(soilValue) >= 100 && Double.parseDouble(soilValue) <= 300) {
+                soilStatus = "Wet";
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
+                }
             }
-        } else if (Double.parseDouble(soilValue) >= 300 && Double.parseDouble(soilValue) <= 700) {
-            soilStatus = "Moist";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
-            }
-        } else if (Double.parseDouble(soilValue) >= 1 && Double.parseDouble(soilValue) <= 100) {
-            soilStatus = "Normal";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
-            }
-        } else if (Double.parseDouble(soilValue) >= 100 && Double.parseDouble(soilValue) <= 300) {
-            soilStatus = "Wet";
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
-            }
+
+            int soilProgressValue = Math.round((int) Double.parseDouble(soilValue) / 7);
+            updateProgress(soilProgressValue, progressBarSoilMoisture);
+            tvSoilMoisture.setText(soilValue + "% - " + soilStatus);
+        } else {
+            tvSoilMoisture.setText("No Data");
+            updateProgress(0, progressBarSoilMoisture);
         }
-
-        int soilProgressValue = Math.round((int) Double.parseDouble(soilValue) / 7);
-        updateProgress(soilProgressValue, progressBarSoilMoisture);
-        tvSoilMoisture.setText(soilValue + "% - " + soilStatus);
     }
 
     private void updateProgress(int progress, ProgressBar progressBar) {
