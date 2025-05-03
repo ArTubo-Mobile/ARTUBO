@@ -430,8 +430,7 @@ public class ScannerActivity extends AppCompatActivity {
                             String formattedConfidence = String.format(Locale.US, "%.2f%%", result.confidence);
 
                             resultTextView.setText("Diagnosis: " + result.diagnosis +
-                                    "\nConfidence: " + formattedConfidence +
-                                    "\nSaved to your account!");
+                                    "\nConfidence: " + formattedConfidence);
                             analysisProgressBar.setVisibility(View.GONE);
 
                             // Re-enable buttons
@@ -446,10 +445,11 @@ public class ScannerActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         runOnUiThread(() -> {
                             resultTextView.setText("Diagnosis: " + result.diagnosis +
-                                    "\nConfidence: " + result.confidence + "%" +
-                                    "\nFailed to save to database");
+                                    "\nConfidence: " + result.confidence + "%");
                             analysisProgressBar.setVisibility(View.GONE);
-
+                            Toast.makeText(ScannerActivity.this,
+                                    "Failed to save to database",
+                                    Toast.LENGTH_SHORT).show();
                             // Re-enable buttons
                             saveButton.setEnabled(true);
                             retakeButton.setEnabled(true);
