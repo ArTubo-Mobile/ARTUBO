@@ -41,7 +41,7 @@ import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
 
-    Button button_start, button_about, button_exit;
+    Button button_start, button_about, button_exit, button_sensor_data;
 
     DatabaseReference dbref, dbref_admin;
 
@@ -85,6 +85,7 @@ public class Dashboard extends AppCompatActivity {
         button_start = (Button) findViewById(R.id.buttonStart);
         button_about = (Button) findViewById(R.id.buttonAbout);
         button_exit = (Button) findViewById(R.id.buttonExit);
+        button_sensor_data = (Button) findViewById(R.id.button_sensor_data);
 
         if(mUser!=null){
             firebase_uid = mUser.getUid();
@@ -106,6 +107,14 @@ public class Dashboard extends AppCompatActivity {
                 }
             }
         });
+
+        button_sensor_data.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ScannerDetails.class);
+                startActivity(intent);
+            }
+        }));
 
         button_about.setOnClickListener(new View.OnClickListener() {
             @Override

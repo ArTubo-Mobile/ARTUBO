@@ -324,9 +324,7 @@ public class ScannerActivity extends AppCompatActivity {
                     rawPredictions[4]  // Yellow
             );
 
-            // Save to Firebase Database
-            String resultId = scanResultsRef.push().getKey();
-            scanResultsRef.child(currentUser.getUid()).child(resultId).setValue(scanResult)
+            scanResultsRef.child(currentUser.getUid()).setValue(scanResult)
                     .addOnSuccessListener(aVoid -> {
                         // Update UI
                         runOnUiThread(() -> {

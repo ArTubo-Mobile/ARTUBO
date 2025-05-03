@@ -30,11 +30,11 @@
             </intent-filter>
 
         </activity>
-<!--        <activity-->
-<!--            android:name=".ScannerDetails"-->
-<!--            android:exported="false"-->
-<!--           >-->
-<!--        </activity>-->
+        <activity
+            android:name=".ScannerDetails"
+            android:exported="false"
+           >
+        </activity>
 
 <!--        <activity-->
 <!--            android:name=".ForgotPassword"-->
