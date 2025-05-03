@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,16 +16,8 @@ import androidx.core.content.ContextCompat;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import org.tensorflow.lite.examples.classification.AboutPage;
-import org.tensorflow.lite.examples.classification.ClassifierActivity;
 import org.tensorflow.lite.examples.classification.Login;
-import org.tensorflow.lite.examples.classification.data_class.UserAdminClass;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -34,24 +25,14 @@ import android.content.pm.PackageManager;
 import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
-
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Dashboard extends AppCompatActivity {
 
     Button button_start, button_about, button_exit, button_sensor_data;
 
-    DatabaseReference dbref, dbref_admin;
-
-
-    private List<UserAdminClass> user_admin_list;
 
     FirebaseAuth mAuth;
     FirebaseUser mUser;
 
-    TextView text_welcome_note;
 
     String firebase_uid = "";
 
