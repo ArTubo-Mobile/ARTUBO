@@ -181,7 +181,7 @@ public class Login extends AppCompatActivity {
                         // Load user data before proceeding
                         fetchUserDataAndNavigate(mUser.getUid());
                         clearForm();
-                        Toast.makeText(getApplicationContext(), "Welcome to AR-Tubo!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Welcome to AsuCare!", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     handleError("Authentication Failed");

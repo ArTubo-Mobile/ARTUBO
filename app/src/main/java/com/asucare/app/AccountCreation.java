@@ -183,7 +183,7 @@ public class AccountCreation extends AppCompatActivity {
 
                 // Show success message
                 Toast.makeText(AccountCreation.this,
-                        "Successfully created an account!\nWelcome to AR-Tubo",
+                        "Successfully created an account!\nWelcome to AsuCare",
                         Toast.LENGTH_LONG).show();
 
                 // Navigate to login

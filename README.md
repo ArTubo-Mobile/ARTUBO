@@ -1,146 +1,83 @@
-# Object Classification using Machine Learning
+# ASUCARE 🌱
 
-### Object Detection Android App Tutorial using Teachable Machine and Tensorflow Lite
+ASUCARE is an Android application designed to assist sugarcane farmers in monitoring crop health using AI and IoT. It features real-time leaf disease detection through object detection and integrates with Arduino-based sensors to gather vital environmental and plant-specific data. The app also includes user authentication for personalized crop management.
 
-Last updated: November 19, 2021 by Alexis Wu
+## ✨ Features
 
-## Overview
+- 📷 **Leaf Disease Detection**
+  - Uses object detection (e.g., TensorFlow Lite) to identify sugarcane leaf diseases via the camera.
+  - Offers visual feedback and suggestions for treatment.
 
-This tutorial provides step-by-step instructions on how to create an Android app using Google's Teachable Machine and Android Studio. By following the tutorial, you will be able to use your Android app to detect objects through supervised machine learning. 
+- 📡 **Real-time Sensor Data**
+  - Fetches data from Arduino sensors (e.g., temperature, soil moisture, humidity).
+  - Displays live graphs and trends for informed decision-making.
 
-This is an example application for [TensorFlow Lite](https://tensorflow.org/lite) on Android. It uses image classification to continuously classify objects it sees from the device's back camera. Inference is performed using the TensorFlow Lite Java API. The demo app classifies frames in real-time, displaying the top most probable classifications. 
+- 👤 **User Authentication**
+  - Account creation and login using Firebase Authentication.
+  - Secure and persistent user data.
 
-For details of the model used, visit [Image classification](https://www.tensorflow.org/lite/models/image_classification/overview).
+- 📊 **Dashboard**
+  - Overview of plant health metrics and detected diseases.
+  - Historical data visualization for disease progression and environmental changes.
 
+## 🛠️ Tech Stack
 
-### Tutorial Overview
+- **Frontend**: Android (Java/Kotlin)
+- **ML**: TensorFlow Lite for object detection
+- **Backend**: Firebase (Auth, Firestore, Realtime Database)
+- **Hardware**: Arduino + DHT11/Soil Moisture Sensor/Other IoT Modules
+- **Communication**: Bluetooth / WiFi / MQTT (for Arduino-to-App data transfer)
 
-1. Data collection
-2. Train the model using collected image data
-3. Export machine learning model
-4. Incorporate model into an Android app
+## 🔧 Setup Instructions
 
-### Requirements
+### Android App
 
-*   Android Studio 4.0 (installed on a Mac, Linux, or Windows machine)
-*   Android device in [developer mode](https://developer.android.com/studio/debug/dev-options) with USB debugging enabled
-*   USB cable (to connect Android device to your computer)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/asucare.git
+    ```
 
-<img src="images/app-example-seal.png?raw=true" alt="App Example Page" width="300" height="520"/>
+2. Open in Android Studio.
+3. Add your Firebase configuration file (`google-services.json`) to `/app`.
+4. Sync project and build the APK.
 
+### Arduino Sensor
 
-## Create and train model
+1. Connect sensors to Arduino (DHT11, Soil Moisture Sensor, etc.)
+2. Upload the sensor sketch (`arduino/sketch.ino`) provided in the repo.
+3. Ensure Bluetooth/Wi-Fi module is paired with the Android device.
+4. Stream sensor data using a defined protocol (e.g., JSON over serial/Bluetooth).
 
-### Step 1: Data collection
+## 📷 Leaf Disease Detection
 
-To train the machine learning model, we'll be using [Google's Teachable Machine 2.0](https://teachablemachine.withgoogle.com/train/image). Aside from Image Project, Teachable Machine also includes options Audio Project and Pose Project, which will not be covered in this tutorial.
+* Trained a custom object detection model on sugarcane leaf images.
+* Model exported as `.tflite` and integrated into the app using TensorFlow Lite Android API.
+* Detects common diseases such as red rot, leaf scald, smut, etc.
 
-Begin by deciding which objects you plan to train your model on. Then, you can collect your data in two ways: 
+## 🔐 Authentication & User Flow
 
-1. Take photos of each object using your phone camera, separate them into different files, and upload the appropriate file for each class. 
-2. Use the webcam option under "Add Image Samples" for each class on the Teachable Machine website.
+* Firebase Email/Password authentication
+* User profile and historical sensor data stored in Firestore
+* Secure access to personalized dashboard and disease history
 
-### Notes
-*   Be sure to only include one object for each class (i.e. make sure there are no banana images in the apple class and vice versa). 
-*   It is recommended that you take at least 50 image samples for each class and have at least 3 classes. 
-*   Your image samples should also ideally be from different angles.
-*   Click the pencil icon next to each Class # and rename the class.
+## 📎 Future Improvements
 
+* Integration with weather APIs for predictive analytics
+* Notification alerts for disease detection or abnormal readings
+* Multilingual support for local farmers
 
-### Step 2: Train the model using collected image data
+## 📸 Screenshots
 
-Once you have collected all the data and created your classes, you will train your model. Click the "Train Model" button. You do not need to change any of the values under Advanced (you can keep the number of epochs, batch size, and learning rate as the default values). 
+*(Include screenshots of disease detection, sensor data dashboard, and login page here)*
 
-In the preview window, turn the input on and test out your model. Under the output, your model should be able to distinguish between the objects. If you would like to add more image samples, you will need to go through the process again to re-train your model.
+## 📄 License
 
-<br/>
+MIT License. See [LICENSE](LICENSE) for more information.
 
-## Build and run app
+## 🤝 Contributing
 
-### Step 3: Export machine learning model
+Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
 
-Now that you've trained your model, you'll need to export it. As the model will be used in an Android app, click on the Tensorflow Lite tab and download both the floating point and quantized models. When you download your floating point model, the folder should include two files: labels.txt and model_unquant.tflite. Similarly, in your quantized model folder, you should have labels.txt and model.tflite. 
+---
 
-Now, get the project from [Github](https://github.com/tensorflow/examples). Click the green code button and download ZIP. You will need to click through a number of folders (``examples-master/lite/examples/image_classification/android/app/src/main/assets``). In assets, copy the ``labels.txt``, ``model.tflite``, and ``model_unquant.tflite`` files (you only need to keep one ``labels.txt`` file) into assets. 
-
-
-### Step 4: Incorporate model into an Android app
-
-Now, copy the file path for the android folder. Open Android Studio and click "Open an existing Android Studio project." A window should pop up that says "Open File or Project." At the top of the window, copy paste the file path and click OK. 
-
-Your screen should look like the one below. Double click on CameraActivity (found under ``app/java/org.tensorflow.lite.examples.classification``), find (using Ctrl+f on Windows) the line of code that says 
-
-```
-private Model model = Model.QUANTIZED_EFFICIENTNET;
-``` 
-
-and change QUANTIZED to FLOAT so that the line of code now reads 
-
-```
-private Model model = Model.FLOAT_EFFICIENTNET;
-```
-
-Now, inside the tflite package under ``org.tensorflow.lite.examples.classification`` folder, double click on the ClassifierFloatEfficientNet.java class and find the function getModelPath(). Inside this function, there should be a line that says 
-
-```
-return "efficientnet-lite0-fp32.tflite";
-```
-
-Change the file so that the code now reads
-
-```
-return "model_unquant.tflite";
-```
-
-In the same class, find getLabelPath() and change the code to return ``"labels.txt"`` instead of ``"labels_without_background.txt"``. 
-
-Now, open the ClassiferFloatMobileNet.java class. Again, change the return statement in the function getModelPath() to ``return "model.unquant.tflite"`` instead of the existing line of code.
-
-Next, open the ClassifierQuantizedEfficientNet.java class and find the function getModelPath(). This time, we will change ``return "efficientnet-lite0-int8.tflite";`` to ``return "model.tflite";`` and change the return value in ``getLabelPath()`` to ``return "labels.txt";``.
-
-Do the same for ClassifierQuantizedMobileNet.java. 
-
-
-### Step 6: Build the Android Studio project
-
-Select `Build -> Make Project` and check that the project builds successfully. You will need Android SDK configured in the settings. You'll need at least SDK
-version 23. The `build.gradle` file will prompt you to download any missing libraries.
-
-The file `download.gradle` directs gradle to download the two models used in the example, placing them into `assets`.
-
-<aside class="note"><b>Note:</b><p>`build.gradle` is configured to use TensorFlow Lite's nightly build.</p><p>If you see a build error related to compatibility with Tensorflow Lite's Java API (for example, `method X is undefined for type Interpreter`), there has likely been a backwards compatible change to the API. You will need to run `git pull` in the examples repo to obtain a version that is compatible with the nightly build.</p></aside>
-
-<img src="images/build-app-1.png?raw=true" alt="App Example Page" width="427" height="204"/>
-
-<img src="images/build-app-2.png?raw=true" alt="App Example Page" width="732" height="204"/>
-
-
-### Step 7: Turn on Android phone developer mode
-
-In our example, we have used a Motorola Moto E4 phone. Go to _Settings_ and scroll to _About phone_. Scroll down to _Build number_ and click it seven times. After a few taps, the steps should count down until you unlock the developer options. Then, back in _Settings_, scroll to _Developer options_ and turn Developer mode on. Once developer options are activated, you will see a message that reads, You are now a developer!
-
-
-### Step 8: Install and run the app
-
-Connect the Android device to the computer and be sure to approve any ADB permission prompts that appear on your phone. Select `Run -> Run app.` Select the deployment target in the connected devices to the device on which the app will be installed. This will install the app on the device. The app should automatically open and it should be able to recognize the objects you trained the model on. If the labels are not showing up, make sure the ``labels.txt`` file is still in your assets folder.
-
-<img src="images/run-app.png?raw=true" alt="App Example Page" width="223" height="152"/>
-
-
-## Assets folder
-_Do not delete the assets folder content_. If you explicitly deleted the files, choose `Build -> Rebuild` to re-download the deleted model files into the assets folder.
-
-
-## Sources
-
-[Google's Teachable Machine 2.0](https://teachablemachine.withgoogle.com/)
-
-[TensorFlow Reference Code](https://github.com/tensorflow/examples)
-
-[Dinesh Raturi's Fruits Prediction Android App Youtube Tutorial](https://www.youtube.com/watch?v=fNbxSXi0OkA)
-
-[How-To Geek: How to Access Developer Options and Enable USB Debugging on Android](https://www.howtogeek.com/129728/how-to-access-the-developer-options-menu-and-enable-usb-debugging-on-android-4.2/)
-
-## Contact
-
-For any questions, suggestions, or concerns, please contact me at alexiswu@princeton.edu.
+Made with 💚 for sustainable farming.

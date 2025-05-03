@@ -220,6 +220,8 @@ public class ScannerDetails extends AppCompatActivity {
     }
 
     private void updateEnvironmentData(Plant plantData) {
+        Toast.makeText(ScannerDetails.this, "Error loading user data: " + plantData, Toast.LENGTH_SHORT).show();
+
         // Temperature
         if (plantData.getTemperature() != null && !plantData.getTemperature().isEmpty()) {
             String tempValue = plantData.getTemperature();
