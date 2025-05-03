@@ -272,38 +272,45 @@ public class ScannerDetails extends AppCompatActivity {
 
         // Soil Moisture
         if (plantData.getSoil_moisture() != null && !plantData.getSoil_moisture().isEmpty()) {
-            String soilValue = plantData.getSoil_moisture();
+            String rawSoilValue = plantData.getSoil_moisture();
+            double rawValue = Double.parseDouble(rawSoilValue);
             String soilStatus = "";
 
-            if (Double.parseDouble(soilValue) >= 700) {
-                soilStatus = "Dry";
+            if (rawValue >= 1024) {
+                // Handle sensor not connected or no contact
+                soilStatus = "No Soil Contact";
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_critical));
                 }
-            } else if (Double.parseDouble(soilValue) >= 300 && Double.parseDouble(soilValue) <= 700) {
-                soilStatus = "Moist";
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
-                }
-            } else if (Double.parseDouble(soilValue) >= 1 && Double.parseDouble(soilValue) <= 100) {
-                soilStatus = "Normal";
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
-                }
-            } else if (Double.parseDouble(soilValue) >= 100 && Double.parseDouble(soilValue) <= 300) {
-                soilStatus = "Wet";
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    progressBarSoilMoisture.setProgressTintList(getColorStateList(R.color.progress_tint_normal));
-                }
-            }
+                updateProgress(0, progressBarSoilMoisture);
+                tvSoilMoisture.setText("No Soil Contact");
+            } else {
+                // Convert raw 0–1023 to percentage
+                int moisturePercentage = (int) Math.round((1023 - rawValue) / 1023 * 100);
 
-            int soilProgressValue = Math.round((int) Double.parseDouble(soilValue) / 7);
-            updateProgress(soilProgressValue, progressBarSoilMoisture);
-            tvSoilMoisture.setText(soilValue + "% - " + soilStatus);
+                // Determine moisture status
+                if (moisturePercentage >= 80) {
+                    soilStatus = "Wet";
+                } else if (moisturePercentage >= 40) {
+                    soilStatus = "Moist";
+                } else {
+                    soilStatus = "Dry";
+                }
+
+                // Set progress bar color
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    int color = (moisturePercentage >= 40) ? R.color.progress_tint_normal : R.color.progress_tint_critical;
+                    progressBarSoilMoisture.setProgressTintList(getColorStateList(color));
+                }
+
+                updateProgress(moisturePercentage, progressBarSoilMoisture);
+                tvSoilMoisture.setText(moisturePercentage + "% - " + soilStatus);
+            }
         } else {
             tvSoilMoisture.setText("No Data");
             updateProgress(0, progressBarSoilMoisture);
         }
+
     }
 
     private void updateProgress(int progress, ProgressBar progressBar) {
