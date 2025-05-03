@@ -68,9 +68,17 @@ public class ScannerActivity extends AppCompatActivity {
 
     private boolean imageCaptured = false;
 
+    // To store analyzed results between steps
+    private AnalysisResult analyzedResult;
 
     // Thread pool for background tasks
     private ExecutorService executor;
+
+    private Button saveButton;
+    private Button retakeButton;
+    private File lastCapturedFile; // Save path for image
+
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +89,17 @@ public class ScannerActivity extends AppCompatActivity {
         previewView = findViewById(R.id.preview_view);
         captureButton = findViewById(R.id.capture_button);
         resultTextView = findViewById(R.id.result_text);
-        capturedImageView = findViewById(R.id.captured_image_view); // Add this to your layout
-        analysisProgressBar = findViewById(R.id.analysis_progress_bar); // Add this to your layout
+        capturedImageView = findViewById(R.id.captured_image_view);
+        analysisProgressBar = findViewById(R.id.analysis_progress_bar);
+        saveButton = findViewById(R.id.save_button);
+        retakeButton = findViewById(R.id.retake_button);
+        backButton = findViewById(R.id.backButton);
 
-        // Hide progress bar and image view initially
+        // Hide progress bar, image view, and action buttons initially
         analysisProgressBar.setVisibility(View.GONE);
         capturedImageView.setVisibility(View.GONE);
+        saveButton.setVisibility(View.GONE);
+        retakeButton.setVisibility(View.GONE);
 
         // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -106,11 +119,7 @@ public class ScannerActivity extends AppCompatActivity {
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!imageCaptured) {
-                    captureImage();
-                } else {
-                    resetScannerUI(); // Retake logic
-                }
+                captureImage();
             }
         });
 
@@ -120,6 +129,32 @@ public class ScannerActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        // Set up save button to save analysis results to Firebase
+        saveButton.setOnClickListener(v -> {
+            if (lastCapturedFile != null && analyzedResult != null) {
+                // Show progress bar
+                analysisProgressBar.setVisibility(View.VISIBLE);
+                resultTextView.setText("Saving to your account...");
+
+                // Disable buttons during saving
+                saveButton.setEnabled(false);
+                retakeButton.setEnabled(false);
+
+                // Save the already analyzed results to Firebase
+                executor.execute(() -> saveResultToFirebase(analyzedResult));
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+                startActivity(intent);
+            }
+        });
+
+        // Set up retake button to reset the UI
+        retakeButton.setOnClickListener(v -> resetScannerUI());
     }
 
     private void initTensorFlowModel() {
@@ -200,7 +235,6 @@ public class ScannerActivity extends AppCompatActivity {
 
         File photoFile = new File(appDir, filename);
 
-
         // Create output options object
         ImageCapture.OutputFileOptions outputOptions =
                 new ImageCapture.OutputFileOptions.Builder(photoFile).build();
@@ -212,25 +246,30 @@ public class ScannerActivity extends AppCompatActivity {
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         // Show the captured image
                         Bitmap capturedBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                        capturedImageView.setImageBitmap(capturedBitmap);
+
                         // Add image to gallery
                         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                         Uri contentUri = Uri.fromFile(photoFile);
                         mediaScanIntent.setData(contentUri);
                         sendBroadcast(mediaScanIntent);
 
-                        capturedImageView.setVisibility(View.VISIBLE);
                         imageCaptured = true;
-                        runOnUiThread(() -> captureButton.setText("Retake"));
+                        lastCapturedFile = photoFile;
 
+                        runOnUiThread(() -> {
+                            capturedImageView.setImageBitmap(capturedBitmap);
+                            capturedImageView.setVisibility(View.VISIBLE);
+                            captureButton.setVisibility(View.GONE);
+                            saveButton.setVisibility(View.VISIBLE);
+                            retakeButton.setVisibility(View.VISIBLE);
+                            analysisProgressBar.setVisibility(View.VISIBLE);
+                            resultTextView.setText("Analyzing image...");
+                        });
 
-                        // Show the progress bar
-                        analysisProgressBar.setVisibility(View.VISIBLE);
-                        resultTextView.setText("Analyzing...");
-
-                        // Process the image in background
+                        // Automatically analyze the image after capture
                         executor.execute(() -> {
-                            processCapturedImage(photoFile);
+                            // Analyze the image (without saving to Firebase)
+                            analyzeImage(photoFile);
                         });
                     }
 
@@ -247,17 +286,32 @@ public class ScannerActivity extends AppCompatActivity {
     }
 
     private void resetScannerUI() {
-        // Reset UI to allow a new scan
         capturedImageView.setVisibility(View.GONE);
+        captureButton.setVisibility(View.VISIBLE);
+        captureButton.setEnabled(true);
+        saveButton.setVisibility(View.GONE);
+        retakeButton.setVisibility(View.GONE);
         analysisProgressBar.setVisibility(View.GONE);
         resultTextView.setText("Ready to scan");
-        captureButton.setText("SCAN");
-        captureButton.setEnabled(true);
+        lastCapturedFile = null;
+        analyzedResult = null;
         imageCaptured = false;
     }
 
+    // Class to hold analysis results
+    private static class AnalysisResult {
+        String diagnosis;
+        float confidence;
+        float[] rawPredictions;
 
-    private void processCapturedImage(File imageFile) {
+        AnalysisResult(String diagnosis, float confidence, float[] rawPredictions) {
+            this.diagnosis = diagnosis;
+            this.confidence = confidence;
+            this.rawPredictions = rawPredictions;
+        }
+    }
+
+    private void analyzeImage(File imageFile) {
         try {
             // Load the image
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
@@ -312,24 +366,38 @@ public class ScannerActivity extends AppCompatActivity {
             final float confidence = maxProb * 100;
             final String diagnosis = className;
 
-            // Save scan result to Firebase (data only, no image)
-            saveScanResultToFirebase(diagnosis, confidence, outputBuffer[0]);
+            // Store the analysis result
+            analyzedResult = new AnalysisResult(diagnosis, confidence, outputBuffer[0]);
+
+            // Update UI with results
+            runOnUiThread(() -> {
+                String formattedConfidence = String.format(Locale.US, "%.2f%%", confidence);
+                resultTextView.setText("Diagnosis: " + diagnosis +
+                        "\nConfidence: " + formattedConfidence +
+                        "\nClick Save to store in your account");
+                analysisProgressBar.setVisibility(View.GONE);
+                saveButton.setEnabled(true);
+                retakeButton.setEnabled(true);
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
             runOnUiThread(() -> {
-                resultTextView.setText("Error: " + e.getMessage());
+                resultTextView.setText("Error analyzing image: " + e.getMessage());
                 analysisProgressBar.setVisibility(View.GONE);
-                captureButton.setEnabled(true);
+                saveButton.setEnabled(true);
+                retakeButton.setEnabled(true);
             });
         }
     }
 
-    private void saveScanResultToFirebase(String diagnosis, float confidence, float[] rawPredictions) {
+    private void saveResultToFirebase(AnalysisResult result) {
         if (currentUser == null) {
             runOnUiThread(() -> {
                 Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
                 analysisProgressBar.setVisibility(View.GONE);
-                captureButton.setEnabled(true);
+                saveButton.setEnabled(true);
+                retakeButton.setEnabled(true);
             });
             return;
         }
@@ -338,41 +406,50 @@ public class ScannerActivity extends AppCompatActivity {
             // Create scan result object (no image URL)
             ScanResult scanResult = new ScanResult(
                     currentUser.getUid(),
-                    diagnosis,
-                    confidence,
+                    result.diagnosis,
+                    result.confidence,
                     null, // No image URL
                     System.currentTimeMillis(),
-                    rawPredictions[0], // Healthy
-                    rawPredictions[1], // Mosaic
-                    rawPredictions[2], // RedRot
-                    rawPredictions[3], // Rust
-                    rawPredictions[4]  // Yellow
+                    result.rawPredictions[0], // Healthy
+                    result.rawPredictions[1], // Mosaic
+                    result.rawPredictions[2], // RedRot
+                    result.rawPredictions[3], // Rust
+                    result.rawPredictions[4]  // Yellow
             );
 
-            scanResultsRef.child(currentUser.getUid()).setValue(scanResult)
+            // Save to user's scan history with the unique ID
+            scanResultsRef.child(currentUser.getUid())
+                    .setValue(scanResult)
                     .addOnSuccessListener(aVoid -> {
                         // Update UI
                         runOnUiThread(() -> {
                             // Format confidence to 2 decimal places
-                            String formattedConfidence = String.format(Locale.US, "%.2f%%", confidence);
+                            String formattedConfidence = String.format(Locale.US, "%.2f%%", result.confidence);
 
-                            resultTextView.setText("Diagnosis: " + diagnosis +
-                                    "\nConfidence: " + formattedConfidence);
+                            resultTextView.setText("Diagnosis: " + result.diagnosis +
+                                    "\nConfidence: " + formattedConfidence +
+                                    "\nSaved to your account!");
                             analysisProgressBar.setVisibility(View.GONE);
-                            captureButton.setEnabled(true);
+
+                            // Re-enable buttons
+                            saveButton.setEnabled(true);
+                            retakeButton.setEnabled(true);
 
                             Toast.makeText(ScannerActivity.this,
-                                    "Scan saved to your account",
+                                    "Scan saved successfully",
                                     Toast.LENGTH_SHORT).show();
                         });
                     })
                     .addOnFailureListener(e -> {
                         runOnUiThread(() -> {
-                            resultTextView.setText("Diagnosis: " + diagnosis +
-                                    "\nConfidence: " + confidence + "%" +
+                            resultTextView.setText("Diagnosis: " + result.diagnosis +
+                                    "\nConfidence: " + result.confidence + "%" +
                                     "\nFailed to save to database");
                             analysisProgressBar.setVisibility(View.GONE);
-                            captureButton.setEnabled(true);
+
+                            // Re-enable buttons
+                            saveButton.setEnabled(true);
+                            retakeButton.setEnabled(true);
                         });
                     });
 
@@ -381,7 +458,10 @@ public class ScannerActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 resultTextView.setText("Error saving result: " + e.getMessage());
                 analysisProgressBar.setVisibility(View.GONE);
-                captureButton.setEnabled(true);
+
+                // Re-enable buttons
+                saveButton.setEnabled(true);
+                retakeButton.setEnabled(true);
             });
         }
     }
