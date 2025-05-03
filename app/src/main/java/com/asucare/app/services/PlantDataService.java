@@ -19,7 +19,7 @@ public class PlantDataService {
 
     public PlantDataService() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        currentReadingReference = database.getReference("/current_reading");
+        currentReadingReference = database.getReference("/plant_details");
         scanResultsReference = database.getReference("/scan_results");
     }
 
@@ -27,8 +27,8 @@ public class PlantDataService {
      * Get current plant reading data from Firebase
      * @param callback Callback to handle the plant data
      */
-    public void getCurrentPlantReading(PlantDataCallback callback) {
-        currentReadingReference.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getCurrentPlantReading(String arduino_Id, PlantDataCallback callback) {
+        currentReadingReference.child(arduino_Id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.getChildrenCount() > 0) {

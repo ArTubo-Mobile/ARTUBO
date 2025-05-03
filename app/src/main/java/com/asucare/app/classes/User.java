@@ -6,6 +6,10 @@ public class User {
     String arduino_uid;
     String firebase_id;
 
+    public User() {
+        // Firebase requires a no-argument constructor
+    }
+
     public User(String firebase_id, String username, String email, String arduino_uid) {
         this.username = username;
         this.email = email;

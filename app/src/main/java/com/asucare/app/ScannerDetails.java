@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,12 +19,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.asucare.app.services.PlantDataService;
+import com.asucare.app.services.UserDataService;
+import com.asucare.app.classes.User;
+import android.widget.Toast;
+
 
 public class ScannerDetails extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private PlantDataService plantDataService;
+
+    private UserDataService userDataService;
 
     private ImageView imgBack, imgPlantDetected;
     private TextView tvPlantDetectedLabel, tvPlantDetectedSublabel;
@@ -40,6 +45,8 @@ public class ScannerDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner_details);
+        userDataService = new UserDataService();
+
 
         // Initialize status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -66,8 +73,6 @@ public class ScannerDetails extends AppCompatActivity {
         // Initialize UI components
         initViews();
 
-
-
         // Back button functionality
         imgBack.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Dashboard.class);
@@ -75,8 +80,7 @@ public class ScannerDetails extends AppCompatActivity {
         });
 
         // Fetch current plant data
-        fetchCurrentPlantData();
-        fetchLatestScan(firebaseUid);
+        getUserDataAndFetchPlantData(firebaseUid);
     }
 
     private void initViews() {
@@ -93,12 +97,48 @@ public class ScannerDetails extends AppCompatActivity {
         progressBarSoilMoisture = findViewById(R.id.progressBar_soilmoisture);
     }
 
+    private void getUserDataAndFetchPlantData(String firebaseID) {
+        userDataService.getUserByFirebaseUid(firebaseID, new UserDataService.UserCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                runOnUiThread(() ->
+                        Toast.makeText(ScannerDetails.this, user.getArduino_uid(), Toast.LENGTH_SHORT).show()
+                );
+                if (user != null && user.getArduino_uid() != null && !user.getArduino_uid().isEmpty()) {
+                    // Pass the arduino_id to fetch plant data
+                    String arduino_id = user.getArduino_uid();
+                    fetchCurrentPlantData(arduino_id);
+                    fetchLatestScan(firebaseID);
+                } else {
+                    runOnUiThread(() ->
+                            Toast.makeText(ScannerDetails.this, "No Arduino ID found for this user", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+
+            @Override
+            public void onUserNotFound() {
+                runOnUiThread(() ->
+                        Toast.makeText(ScannerDetails.this, "User data not found", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                runOnUiThread(() ->
+                        Toast.makeText(ScannerDetails.this, "Error loading user data: " + errorMessage, Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
+    }
+
     private void updateScanResultUI() {
         if (diseaseDetected.equals("Healthy")) {
             imgPlantDetected.setImageResource(R.drawable.bgplantdetected2_tubo);
             tvPlantDetectedLabel.setText("Sugarcane");
             tvPlantDetectedSublabel.setText("Saccharum officinarum");
             tvDiseaseDetected.setText("No Disease Detected");
+            tvDiseaseDetected.setText(diseaseDetected + " (" + objectDetectionConfidence + "%)");
         } else if (diseaseDetected.toLowerCase().equals("no sugarcane found")) {
             tvPlantDetectedLabel.setText("No result");
             tvPlantDetectedSublabel.setText("Object detected is not a sugarcane");
@@ -112,8 +152,8 @@ public class ScannerDetails extends AppCompatActivity {
         }
     }
 
-    private void fetchCurrentPlantData() {
-        plantDataService.getCurrentPlantReading(new PlantDataService.PlantDataCallback() {
+    private void fetchCurrentPlantData(String arduino_id) {
+        plantDataService.getCurrentPlantReading(arduino_id, new PlantDataService.PlantDataCallback() {
             @Override
             public void onDataLoaded(Plant plantData) {
                 if (plantData != null) {
