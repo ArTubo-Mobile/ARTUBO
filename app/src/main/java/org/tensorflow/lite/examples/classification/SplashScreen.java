@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 
 public class SplashScreen extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.ar_tubo.app;
+package com.asucare.app;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,8 +24,8 @@ import com.google.firebase.auth.FirebaseUser;
 import org.tensorflow.lite.examples.classification.CreateAccount;
 import org.tensorflow.lite.examples.classification.ForgotPassword;
 
-import com.ar_tubo.app.classes.User;
-import com.ar_tubo.app.services.UserDataService;
+import com.asucare.app.classes.User;
+import com.asucare.app.services.UserDataService;
 
 public class Login extends AppCompatActivity {
 

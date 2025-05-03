@@ -1,4 +1,4 @@
-package com.ar_tubo.app;
+package com.asucare.app;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.tensorflow.lite.examples.classification.data_class.CurrentPlantData;
-import com.ar_tubo.app.services.PlantDataService;
+import com.asucare.app.services.PlantDataService;
 
 public class ScannerDetails extends AppCompatActivity {
 

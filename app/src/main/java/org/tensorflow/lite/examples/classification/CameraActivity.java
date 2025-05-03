@@ -66,7 +66,7 @@ import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
         Camera.PreviewCallback,

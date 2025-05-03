@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace 'com.ar_tubo.app'
+    namespace 'com.asucare.app'
     compileSdkVersion 34
     defaultConfig {
-        applicationId "com.ar_tubo.app"
+        applicationId "com.asucare.app"
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 1

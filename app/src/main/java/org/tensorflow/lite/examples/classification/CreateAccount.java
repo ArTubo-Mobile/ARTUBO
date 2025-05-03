@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import org.tensorflow.lite.examples.classification.data_class.UserAdminClass;
-import com.ar_tubo.app.Utils;
+import com.asucare.app.Utils;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 public class CreateAccount extends AppCompatActivity {
 
     FirebaseDatabase db;

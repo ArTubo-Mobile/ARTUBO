@@ -1,4 +1,4 @@
-package com.ar_tubo.app;
+package com.asucare.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,8 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import com.ar_tubo.app.classes.User;
-import com.ar_tubo.app.services.UserDataService;
+import com.asucare.app.classes.User;
+import com.asucare.app.services.UserDataService;
 
 
 public class AccountCreation extends AppCompatActivity {

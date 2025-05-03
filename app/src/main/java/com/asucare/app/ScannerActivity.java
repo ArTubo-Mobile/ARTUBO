@@ -1,4 +1,4 @@
-package com.ar_tubo.app;
+package com.asucare.app;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,7 +25,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
-import com.ar_tubo.app.classes.ScanResult;
+import com.asucare.app.classes.ScanResult;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

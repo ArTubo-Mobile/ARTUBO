@@ -10,7 +10,26 @@
       "client_info": {
         "mobilesdk_app_id": "1:6701720973:android:ae0a29d080188f5e0e49c4",
         "android_client_info": {
-          "package_name": "com.ar_tubo.app"
+          "package_name": "com.asucare.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBONbVm-mMvW2rBG8IoDDmJofDxnMaPnmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6701720973:android:506a8080bcbdca630e49c4",
+        "android_client_info": {
+          "package_name": "com.asucare.app"
         }
       },
       "oauth_client": [],

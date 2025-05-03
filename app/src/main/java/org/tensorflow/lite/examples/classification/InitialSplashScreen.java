@@ -28,7 +28,7 @@ import org.tensorflow.lite.examples.classification.data_class.UserAdminClass;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 
 public class InitialSplashScreen extends AppCompatActivity {
 

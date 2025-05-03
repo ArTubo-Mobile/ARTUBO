@@ -1,4 +1,4 @@
-package com.ar_tubo.app;
+package com.asucare.app;
 
 
 
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

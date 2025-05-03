@@ -61,7 +61,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import org.tensorflow.lite.examples.classification.customview.AutoFitTextureView;
 import org.tensorflow.lite.examples.classification.env.Logger;
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 
 /**
  * Camera Connection Fragment that captures images from camera.

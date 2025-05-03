@@ -1,4 +1,4 @@
-package com.ar_tubo.app.classes;
+package com.asucare.app.classes;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;

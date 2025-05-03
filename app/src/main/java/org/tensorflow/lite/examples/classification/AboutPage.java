@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 
 public class AboutPage extends AppCompatActivity {
 

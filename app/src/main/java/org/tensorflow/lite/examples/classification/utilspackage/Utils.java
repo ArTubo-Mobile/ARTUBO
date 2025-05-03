@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ar_tubo.app.R;
+import com.asucare.app.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -169,7 +169,7 @@ public class Utils {
 
 //    public int getHourFromTime(String timeString){
 //
-//        ar_tubo.Utils util_package = new ar_tubo.Utils();
+//        asucare.Utils util_package = new asucare.Utils();
 //        String hourString = util_package.split_string_delim_get_by_index(timeString,":",0);
 //
 //        int hour = Integer.parseInt(hourString);
@@ -180,7 +180,7 @@ public class Utils {
 //
 //    public int getMinutesFromTime(String timeString){
 //
-//        ar_tubo.Utils util_package = new ar_tubo.Utils();
+//        asucare.Utils util_package = new asucare.Utils();
 //        String minString = util_package.split_string_delim_get_by_index(timeString,":",1);
 //
 //        int min = Integer.parseInt(minString);
