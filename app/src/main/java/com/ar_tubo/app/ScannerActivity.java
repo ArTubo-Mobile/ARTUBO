@@ -1,5 +1,6 @@
 package com.ar_tubo.app;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -48,6 +49,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import android.content.res.AssetFileDescriptor;
+import android.net.Uri;
 
 public class ScannerActivity extends AppCompatActivity {
 
@@ -63,6 +65,9 @@ public class ScannerActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private DatabaseReference scanResultsRef;
+
+    private boolean imageCaptured = false;
+
 
     // Thread pool for background tasks
     private ExecutorService executor;
@@ -101,7 +106,11 @@ public class ScannerActivity extends AppCompatActivity {
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                captureImage();
+                if (!imageCaptured) {
+                    captureImage();
+                } else {
+                    resetScannerUI(); // Retake logic
+                }
             }
         });
 
@@ -185,8 +194,12 @@ public class ScannerActivity extends AppCompatActivity {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String filename = "CaneSense_" + timestamp + ".jpg";
 
-        // Create output file for the captured image (temporary storage)
-        File photoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), filename);
+        File appDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "CaneSense");
+        if (!appDir.exists()) appDir.mkdirs();
+
+        File photoFile = new File(appDir, filename);
+
 
         // Create output options object
         ImageCapture.OutputFileOptions outputOptions =
@@ -200,7 +213,16 @@ public class ScannerActivity extends AppCompatActivity {
                         // Show the captured image
                         Bitmap capturedBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                         capturedImageView.setImageBitmap(capturedBitmap);
+                        // Add image to gallery
+                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        Uri contentUri = Uri.fromFile(photoFile);
+                        mediaScanIntent.setData(contentUri);
+                        sendBroadcast(mediaScanIntent);
+
                         capturedImageView.setVisibility(View.VISIBLE);
+                        imageCaptured = true;
+                        runOnUiThread(() -> captureButton.setText("Retake"));
+
 
                         // Show the progress bar
                         analysisProgressBar.setVisibility(View.VISIBLE);
@@ -223,6 +245,17 @@ public class ScannerActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void resetScannerUI() {
+        // Reset UI to allow a new scan
+        capturedImageView.setVisibility(View.GONE);
+        analysisProgressBar.setVisibility(View.GONE);
+        resultTextView.setText("Ready to scan");
+        captureButton.setText("SCAN");
+        captureButton.setEnabled(true);
+        imageCaptured = false;
+    }
+
 
     private void processCapturedImage(File imageFile) {
         try {
@@ -281,14 +314,6 @@ public class ScannerActivity extends AppCompatActivity {
 
             // Save scan result to Firebase (data only, no image)
             saveScanResultToFirebase(diagnosis, confidence, outputBuffer[0]);
-
-            // Attempt to delete the temporary file
-            try {
-                imageFile.delete();
-            } catch (Exception e) {
-                Log.e("FILE_DELETE", "Failed to delete temporary image file: " + e.getMessage());
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
             runOnUiThread(() -> {
