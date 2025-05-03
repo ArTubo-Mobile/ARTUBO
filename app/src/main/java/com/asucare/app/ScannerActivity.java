@@ -373,8 +373,7 @@ public class ScannerActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 String formattedConfidence = String.format(Locale.US, "%.2f%%", confidence);
                 resultTextView.setText("Diagnosis: " + diagnosis +
-                        "\nConfidence: " + formattedConfidence +
-                        "\nClick Save to store in your account");
+                        "\nConfidence: " + formattedConfidence);
                 analysisProgressBar.setVisibility(View.GONE);
                 saveButton.setEnabled(true);
                 retakeButton.setEnabled(true);

@@ -123,9 +123,6 @@ public class ScannerDetails extends AppCompatActivity {
         userDataService.getUserByFirebaseUid(firebaseID, new UserDataService.UserCallback() {
             @Override
             public void onUserLoaded(User user) {
-                runOnUiThread(() ->
-                        Toast.makeText(ScannerDetails.this, user.getArduino_uid(), Toast.LENGTH_SHORT).show()
-                );
                 if (user != null && user.getArduino_uid() != null && !user.getArduino_uid().isEmpty()) {
                     // Pass the arduino_id to fetch plant data
                     String arduino_id = user.getArduino_uid();
