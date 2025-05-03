@@ -67,8 +67,9 @@ public class PlantDataService {
                             // Parse your scan result data here based on your data structure
                             String diseaseDetected = snapshot.child("diagnosis").getValue(String.class);
                             Double confidenceResult = snapshot.child("confidence").getValue(Double.class);
+                            String imagePath = snapshot.child("imagePath").getValue(String.class);
 
-                            callback.onResultLoaded(diseaseDetected, confidenceResult);
+                            callback.onResultLoaded(diseaseDetected, confidenceResult, imagePath);
                         } else {
                             callback.onResultNotFound();
                         }
@@ -89,7 +90,7 @@ public class PlantDataService {
     }
 
     public interface ScanResultCallback {
-        void onResultLoaded(String diseaseDetected, Double confidenceResult);
+        void onResultLoaded(String diseaseDetected, Double confidenceResult, String imagePath);
         void onResultNotFound();
         void onError(String errorMessage);
     }

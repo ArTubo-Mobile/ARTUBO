@@ -402,6 +402,9 @@ public class ScannerActivity extends AppCompatActivity {
             return;
         }
 
+        String imagePath = lastCapturedFile != null ? lastCapturedFile.getAbsolutePath() : null;
+
+
         try {
             // Create scan result object (no image URL)
             ScanResult scanResult = new ScanResult(
@@ -414,7 +417,8 @@ public class ScannerActivity extends AppCompatActivity {
                     result.rawPredictions[1], // Mosaic
                     result.rawPredictions[2], // RedRot
                     result.rawPredictions[3], // Rust
-                    result.rawPredictions[4]  // Yellow
+                    result.rawPredictions[4], // Yellow
+                    imagePath
             );
 
             // Save to user's scan history with the unique ID

@@ -14,6 +14,9 @@ public class ScanResult {
     private String imageUrl; // Can be null since we're not uploading images
     private long timestamp;
 
+    private String imagePath; // Added for local image storage
+
+
     // Store raw prediction values for all classes
     private float healthyScore;
     private float mosaicScore;
@@ -27,7 +30,7 @@ public class ScanResult {
 
     public ScanResult(String userId, String diagnosis, float confidence, String imageUrl,
                       long timestamp, float healthyScore, float mosaicScore, float redRotScore,
-                      float rustScore, float yellowScore) {
+                      float rustScore, float yellowScore, String imagePath) {
         this.userId = userId;
         this.diagnosis = diagnosis;
         this.confidence = confidence;
@@ -38,6 +41,7 @@ public class ScanResult {
         this.redRotScore = redRotScore;
         this.rustScore = rustScore;
         this.yellowScore = yellowScore;
+        this.imagePath = imagePath;
     }
 
     // Getters and setters
@@ -121,6 +125,13 @@ public class ScanResult {
         this.yellowScore = yellowScore;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
     // Helper method to format date for display
     @Exclude
     public String getFormattedDate() {

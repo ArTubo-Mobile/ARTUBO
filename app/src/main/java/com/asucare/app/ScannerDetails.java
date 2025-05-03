@@ -2,11 +2,20 @@ package com.asucare.app;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +31,11 @@ import com.asucare.app.services.PlantDataService;
 import com.asucare.app.services.UserDataService;
 import com.asucare.app.classes.User;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class ScannerDetails extends AppCompatActivity {
@@ -41,12 +55,19 @@ public class ScannerDetails extends AppCompatActivity {
     private String objectDetectionConfidence = "";
     private String firebaseUid = "";
 
+    private ProgressBar imageLoadingSpinner;
+
+    private ExecutorService executor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner_details);
         userDataService = new UserDataService();
 
+        // Initialize executor for background tasks
+        executor = Executors.newSingleThreadExecutor();
 
         // Initialize status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -95,6 +116,7 @@ public class ScannerDetails extends AppCompatActivity {
         progressBarTemp = findViewById(R.id.progressBar_temp);
         progressBarHum = findViewById(R.id.progressBar_humidity);
         progressBarSoilMoisture = findViewById(R.id.progressBar_soilmoisture);
+        imageLoadingSpinner = findViewById(R.id.imageLoadingSpinner);
     }
 
     private void getUserDataAndFetchPlantData(String firebaseID) {
@@ -176,11 +198,14 @@ public class ScannerDetails extends AppCompatActivity {
     private void fetchLatestScan(String userId) {
         plantDataService.getScanResult(userId, new PlantDataService.ScanResultCallback() {
             @Override
-            public void onResultLoaded(String result, Double confidenceResult) {
+            public void onResultLoaded(String result, Double confidenceResult, String imagePath) {
                 if (result != null && confidenceResult != null) {
                     diseaseDetected = result;
                     objectDetectionConfidence = String.format("%.2f", confidenceResult); // 2 decimal places
                     // Update UI with scan result
+                    if (imagePath != null && !imagePath.isEmpty()) {
+                        loadCapturedImage(imagePath);
+                    }
                     updateScanResultUI();
                 }
             }
@@ -280,4 +305,58 @@ public class ScannerDetails extends AppCompatActivity {
             getWindow().setNavigationBarColor(Color.parseColor(color));
         }
     }
+
+    private Bitmap getCircularBitmap(Bitmap bitmap) {
+        int size = Math.min(bitmap.getWidth(), bitmap.getHeight());
+        Bitmap output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(output);
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, size, size);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
+
+
+    private void loadCapturedImage(String imagePath) {
+        runOnUiThread(() -> imageLoadingSpinner.setVisibility(View.VISIBLE));
+
+        executor.execute(() -> {
+            try {
+                File imageFile = new File(imagePath);
+                Bitmap bitmap;
+
+                if (imageFile.exists()) {
+                    bitmap = BitmapFactory.decodeFile(imagePath);
+                    if (bitmap == null) throw new Exception("Failed to decode bitmap.");
+                } else {
+                    // Load a default image from drawable resources
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bgplantdetected2_tubo);
+                }
+
+                Bitmap circularBitmap = getCircularBitmap(bitmap);
+
+                runOnUiThread(() -> {
+                    imgPlantDetected.setImageBitmap(circularBitmap);
+                    imageLoadingSpinner.setVisibility(View.GONE);
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Bitmap fallback = BitmapFactory.decodeResource(getResources(), R.drawable.bgplantdetected2_tubo);
+                    imgPlantDetected.setImageBitmap(getCircularBitmap(fallback));
+                    imageLoadingSpinner.setVisibility(View.GONE);
+                    Toast.makeText(ScannerDetails.this, "Error loading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
 }
