@@ -36,7 +36,7 @@
     <ImageView
         android:id="@+id/captured_image_view"
         android:layout_width="372dp"
-        android:layout_height="502dp"
+        android:layout_height="504dp"
         android:scaleType="centerCrop"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
