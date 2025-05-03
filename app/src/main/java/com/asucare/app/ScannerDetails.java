@@ -14,11 +14,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.asucare.app.classes.Plant;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.tensorflow.lite.examples.classification.data_class.CurrentPlantData;
 import com.asucare.app.services.PlantDataService;
 
 public class ScannerDetails extends AppCompatActivity {
@@ -115,7 +115,7 @@ public class ScannerDetails extends AppCompatActivity {
     private void fetchCurrentPlantData() {
         plantDataService.getCurrentPlantReading(new PlantDataService.PlantDataCallback() {
             @Override
-            public void onDataLoaded(CurrentPlantData plantData) {
+            public void onDataLoaded(Plant plantData) {
                 if (plantData != null) {
                     runOnUiThread(() -> updateEnvironmentData(plantData));
                 }
@@ -157,7 +157,7 @@ public class ScannerDetails extends AppCompatActivity {
         });
     }
 
-    private void updateEnvironmentData(CurrentPlantData plantData) {
+    private void updateEnvironmentData(Plant plantData) {
         // Temperature
         String tempValue = plantData.getTemperature();
         String tempStatus = "";

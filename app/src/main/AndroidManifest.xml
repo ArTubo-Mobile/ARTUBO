@@ -13,13 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.ImageClassification">
 
-<!--        <activity-->
-<!--            android:name=".ClassifierActivity"-->
-<!--            android:label="@string/tfe_ic_app_name"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait">-->
-
-<!--        </activity>-->
         <activity
             android:name=".SplashScreen"
             android:exported="true">
@@ -36,11 +29,11 @@
            >
         </activity>
 
-<!--        <activity-->
-<!--            android:name=".ForgotPassword"-->
-<!--            android:exported="false"-->
-<!--            >-->
-<!--        </activity>-->
+        <activity
+            android:name=".ForgotPassword"
+            android:exported="false"
+            >
+        </activity>
 
         <activity
             android:name=".AboutPage"

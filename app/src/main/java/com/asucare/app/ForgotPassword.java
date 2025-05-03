@@ -1,5 +1,4 @@
-package org.tensorflow.lite.examples.classification;
-
+package com.asucare.app;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,7 +20,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.asucare.app.R;
 
 public class ForgotPassword extends AppCompatActivity {
 
@@ -114,7 +112,7 @@ public class ForgotPassword extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), error_message, Toast.LENGTH_LONG).show();
 
 
-                        Intent ii = new Intent(getApplicationContext(),Login.class);
+                        Intent ii = new Intent(getApplicationContext(), Login.class);
                         startActivity(ii);
                     }else{
 

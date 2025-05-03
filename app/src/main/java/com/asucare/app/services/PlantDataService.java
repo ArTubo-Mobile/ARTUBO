@@ -1,13 +1,14 @@
 package com.asucare.app.services;
 
 import androidx.annotation.NonNull;
+
+import com.asucare.app.classes.Plant;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.tensorflow.lite.examples.classification.data_class.CurrentPlantData;
 
 /**
  * Service class that handles all database operations related to plant data
@@ -33,7 +34,7 @@ public class PlantDataService {
                 if (snapshot.exists() && snapshot.getChildrenCount() > 0) {
                     // Get the first child as we only need one reading
                     DataSnapshot firstChild = snapshot.getChildren().iterator().next();
-                    CurrentPlantData plantData = firstChild.getValue(CurrentPlantData.class);
+                    Plant plantData = firstChild.getValue(Plant.class);
                     callback.onDataLoaded(plantData);
                 } else {
                     callback.onDataNotFound();
@@ -82,7 +83,7 @@ public class PlantDataService {
 
     // Callback interfaces
     public interface PlantDataCallback {
-        void onDataLoaded(CurrentPlantData plantData);
+        void onDataLoaded(Plant plantData);
         void onDataNotFound();
         void onError(String errorMessage);
     }

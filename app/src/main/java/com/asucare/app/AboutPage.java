@@ -7,7 +7,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
-import org.tensorflow.lite.examples.classification.InitialSplashScreen;
 
 public class AboutPage extends AppCompatActivity {
 
@@ -30,7 +29,7 @@ public class AboutPage extends AppCompatActivity {
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ii = new Intent(getApplicationContext(), InitialSplashScreen.class);
+                Intent ii = new Intent(getApplicationContext(), Dashboard.class);
                 startActivity(ii);
             }
         });

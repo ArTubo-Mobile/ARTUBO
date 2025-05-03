@@ -17,8 +17,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.tensorflow.lite.examples.classification.Login;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 

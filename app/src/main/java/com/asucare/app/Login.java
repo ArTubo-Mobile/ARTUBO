@@ -21,9 +21,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.tensorflow.lite.examples.classification.CreateAccount;
-import org.tensorflow.lite.examples.classification.ForgotPassword;
-
 import com.asucare.app.classes.User;
 import com.asucare.app.services.UserDataService;
 
@@ -214,9 +211,10 @@ public class Login extends AppCompatActivity {
     }
 
     private void navigateToCreateAccount() {
-        Intent intent = new Intent(getApplicationContext(), CreateAccount.class);
+        Intent intent = new Intent(getApplicationContext(), AccountCreation.class);
         startActivity(intent);
     }
+
 
     private void navigateToForgotPassword() {
         Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
