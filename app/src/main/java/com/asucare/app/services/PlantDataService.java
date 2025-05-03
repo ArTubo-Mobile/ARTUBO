@@ -25,17 +25,35 @@ public class PlantDataService {
 
     /**
      * Get current plant reading data from Firebase
+     * @param arduino_Id The Arduino ID to fetch plant data for
      * @param callback Callback to handle the plant data
      */
     public void getCurrentPlantReading(String arduino_Id, PlantDataCallback callback) {
         currentReadingReference.child(arduino_Id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.getChildrenCount() > 0) {
-                    // Get the first child as we only need one reading
-                    DataSnapshot firstChild = snapshot.getChildren().iterator().next();
-                    Plant plantData = firstChild.getValue(Plant.class);
-                    callback.onDataLoaded(plantData);
+                if (snapshot.exists()) {
+                    try {
+                        // Create a new Plant object and manually set the properties
+                        Plant plantData = new Plant();
+
+                        // Check for each field individually and set if exists
+                        if (snapshot.child("temperature").exists()) {
+                            plantData.setTemperature(snapshot.child("temperature").getValue(String.class));
+                        }
+
+                        if (snapshot.child("humidity").exists()) {
+                            plantData.setHumidity(snapshot.child("humidity").getValue(String.class));
+                        }
+
+                        if (snapshot.child("soil_moisture").exists()) {
+                            plantData.setSoil_moisture(snapshot.child("soil_moisture").getValue(String.class));
+                        }
+
+                        callback.onDataLoaded(plantData);
+                    } catch (Exception e) {
+                        callback.onError("Error parsing plant data: " + e.getMessage());
+                    }
                 } else {
                     callback.onDataNotFound();
                 }
@@ -49,13 +67,14 @@ public class PlantDataService {
     }
 
     /**
-     * Get a specific scan result by user ID and scan ID
+     * Get a specific scan result by user ID
      *
+     * @param userId User ID to fetch scan results for
      * @param callback Callback to handle the scan result
      */
     public void getScanResult(String userId, ScanResultCallback callback) {
-        if (userId == null ) {
-            callback.onError("Invalid user ID or scan ID");
+        if (userId == null) {
+            callback.onError("Invalid user ID");
             return;
         }
 
@@ -64,12 +83,32 @@ public class PlantDataService {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            // Parse your scan result data here based on your data structure
-                            String diseaseDetected = snapshot.child("diagnosis").getValue(String.class);
-                            Double confidenceResult = snapshot.child("confidence").getValue(Double.class);
-                            String imagePath = snapshot.child("imagePath").getValue(String.class);
+                            try {
+                                // Parse scan result data
+                                String diseaseDetected = snapshot.child("diagnosis").getValue(String.class);
+                                Double confidenceResult = null;
 
-                            callback.onResultLoaded(diseaseDetected, confidenceResult, imagePath);
+                                // Handle possible type mismatch for confidence value
+                                if (snapshot.child("confidence").exists()) {
+                                    Object confidenceObj = snapshot.child("confidence").getValue();
+                                    if (confidenceObj instanceof Double) {
+                                        confidenceResult = (Double) confidenceObj;
+                                    } else if (confidenceObj instanceof Long) {
+                                        confidenceResult = ((Long) confidenceObj).doubleValue();
+                                    } else if (confidenceObj instanceof String) {
+                                        try {
+                                            confidenceResult = Double.parseDouble((String) confidenceObj);
+                                        } catch (NumberFormatException e) {
+                                            confidenceResult = 0.0;
+                                        }
+                                    }
+                                }
+
+                                String imagePath = snapshot.child("imagePath").getValue(String.class);
+                                callback.onResultLoaded(diseaseDetected, confidenceResult, imagePath);
+                            } catch (Exception e) {
+                                callback.onError("Error parsing scan result: " + e.getMessage());
+                            }
                         } else {
                             callback.onResultNotFound();
                         }
