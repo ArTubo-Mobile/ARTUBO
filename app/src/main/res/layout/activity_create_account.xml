@@ -102,9 +102,10 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/edit_text_bg"
-                    android:drawableLeft="@drawable/email2"
-                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/soilmoisture1"
+                    android:drawablePadding="12dp"
 
+                    android:drawableTint="@color/text_secondary"
                     android:hint="Enter arduino id"
                     android:inputType="text"
                     android:padding="10dp"
